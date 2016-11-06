@@ -289,7 +289,7 @@ Before we getting start you need to verify that your nginx was built with OpenSS
 You can verify nginx version by type
 ```
 nginx -V
-
+```
 #### Prerequisites
 
 1. download, config, make and then make install lastest openssl, zlib, pcre from source website (Note that pcre)
@@ -297,7 +297,7 @@ nginx -V
 3. sudo yum install wget curl unzip gcc-c++ pcre-devel zlib-devel
 4. download latest nginx source and cd into it
 5. config below
-
+```
 ./configure \
 --prefix=/etc/nginx \
 --sbin-path=/usr/sbin/nginx \
@@ -340,26 +340,35 @@ nginx -V
 --with-stream \
 --with-stream_ssl_module \
 --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic'
-
-6. make && make install
+```
+6. 
+```
+make && make install
+```
 
 7. config firewall
+```
 firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --permanent --zone=public --add-service=https
 systemctl restart firewalld.service
+```
 
 8. start nginx service by using below command
+```
 /usr/sbin/nginx -c /etc/nginx/nginx.conf
+```
 
 9. check nginx process 
+```
 ps -ef|grep nginx
-
+```
 10. to stop nginx service using below command
+```
 kill -9 PID-Of-Nginx
-
+```
 11. add nginx as systemd service by create a file "nginx.service" in /lib/systemd/system/nginx.service
  then copy below into the file
- 
+ ```
  [Unit]
  Description=The NGINX HTTP and reverse proxy server
  After=syslog.target network.target remote-fs.target nss-lookup.target
@@ -378,11 +387,13 @@ kill -9 PID-Of-Nginx
 
  then reload the system files
  systemctl daemon-reload
- 
+ ```
 12. create startup script 
+```
 sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 sudo nano /etc/init.d/nginx then copy script below
-
+```
+```
 #!/bin/sh
 #
 # nginx - this script starts and stops the nginx daemon
@@ -512,15 +523,17 @@ case "$1" in
         echo $"Usage: $0 {start|stop|status|restart|condrestart|try-restart|reload|force-reload|configtest}"
         exit 2
 esac
-
+```
 13. set permission to make this script be executable 
+```
 chmod +x /etc/init.d/nginx
 sudo systemctl enable nginx
-
+```
 14. To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
+```
 sudo chkconfig nginx on
 sudo service nginx restart
-
+```
 
 NOTE: If you want to install speedtest module (By Google) you must installed following libraries
 
@@ -588,4 +601,69 @@ sudo yum -y group install "Development Tools"
 ```
 
 
+## Set Up Firewall
+
+### Introduction
+
+After setting up the bare minimum configuration for a new server, there are some additional steps that are highly recommended in most cases.
+
+### Prerequisites
+
+In this guide, we will be focusing on configuring some optional but recommended components. This will involve setting our system up with a firewall and a swap file.
+
+### Configuring a Basic Firewall
+
+Firewalls provide a basic level of security for your server. These applications are responsible for denying traffic to every port on your server with exceptions for ports/services you have approved. CentOS ships with a firewall called firewalld. A tool called firewall-cmd can be used to configure your firewall policies. Our basic strategy will be to lock down everything that we do not have a good reason to keep open.
+
+The firewalld service has the ability to make modifications without dropping current connections, so we can turn it on before creating our exceptions:
+```
+sudo systemctl start firewalld
+```
+Now that the service is up and running, we can use the firewall-cmd utility to get and set policy information for the firewall. The firewalld application uses the concept of "zones" to label the trustworthiness of the other hosts on a network. This labelling gives us the ability to assign different rules depending on how much we trust a network.
+
+In this guide, we will only be adjusting the policies for the default zone. When we reload our firewall, this will be the zone applied to our interfaces. We should start by adding exceptions to our firewall for approved services. The most essential of these is SSH, since we need to retain remote administrative access to the server.
+
+You can enable the service by name (eg ssh-daemon) by typing:
+```
+sudo firewall-cmd --permanent --add-service=ssh
+```
+or disable it by typing:
+```
+sudo firewall-cmd --permanent --remove-service=ssh
+```
+or enable custom port by typing:
+```
+sudo firewall-cmd --permanent --add-port=4200/tcp
+```
+This is the bare minimum needed to retain administrative access to the server. If you plan on running additional services, you need to open the firewall for those as well.
+
+If you plan on running a conventional HTTP web server, you will need to enable the http service:
+```
+sudo firewall-cmd --permanent --add-service=http
+```
+If you plan to run a web server with SSL/TLS enabled, you should allow traffic for https as well:
+```
+sudo firewall-cmd --permanent --add-service=https
+```
+If you need SMTP email enabled, you can type:
+```
+sudo firewall-cmd --permanent --add-service=smtp
+```
+To see any additional services that you can enable by name, type:
+```
+sudo firewall-cmd --get-services
+```
+When you are finished, you can see the list of the exceptions that will be implemented by typing:
+```
+sudo firewall-cmd --permanent --list-all
+```
+When you are ready to implement the changes, reload the firewall:
+```
+sudo firewall-cmd --reload
+```
+If, after testing, everything works as expected, you should make sure the firewall will be started at boot:
+```
+sudo systemctl enable firewalld
+```
+Remember that you will have to explicitly open the firewall (with services or ports) for any additional services that you may configure later.
 
