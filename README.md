@@ -370,8 +370,8 @@ sudo yum update
 ```
 1.3 Install compiler 
 ```
-sudo yum groupinstall 'Development Tools' -y
-sudo yum install wget curl unzip gcc-c++ pcre-devel zlib-devel -y
+sudo yum groupinstall 'Development Tools'
+sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
 ```
 
 #### Step 2 Installing NGINX Dependencies
@@ -714,7 +714,7 @@ libresolv.so.2
 libselinux.so.1
 
 
-### PHP 7 
+### PHP 7 (Incomplete)
 
 If you have installed older version you must remove it first by following command.
 
@@ -728,17 +728,8 @@ Install the new PHP 7 packages from IUS. Again, press y and Enter when prompted.
 sudo yum install php70u-fpm-nginx php70u-cli php70u-mysqlnd
 ```
 
-### Phalcon Framework
 
-### Build tool
 
-```
-sudo yum -y install autoconf automake bind-utils gcc libtool make nmap-netcat ntp pam-devel unzip wget
-```
-
-```
-sudo yum -y group install "Development Tools" 
-```
 
 
 ## Set Up Firewall
