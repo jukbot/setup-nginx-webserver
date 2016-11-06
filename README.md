@@ -412,10 +412,15 @@ sudo make install
 ```
 
 #### Step 3 Download NGINX source code
+
 ```
 wget http://nginx.org/download/nginx-1.10.2.tar.gz
 tar zxf nginx-1.xx.x.tar.gz
 cd nginx-1.xx.x
+```
+
+3.1 Config the nginx for built
+```
 ./configure \
 --prefix=/etc/nginx \
 --sbin-path=/usr/sbin/nginx \
@@ -453,25 +458,25 @@ cd nginx-1.xx.x
 --with-http_slice_module \
 --with-http_sub_module \
 --with-http_v2_module \
---with-mail \
+ --with-mail \
 --with-mail_ssl_module \
 --with-stream \
 --with-stream_ssl_module \
 --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic'
 ```
 
-6. Compile and install the build:
+3.2 Compile and install the build:
 ```
 make
 sudo make install
 ```
 
-7. After the installation is finished, run NGINX Open Source:
+3.3 After the installation is finished, run NGINX Open Source:
 ```
 sudo nginx
 ```
 
-8. Config the firewall
+3.4 Config the firewall
 
 ```
 firewall-cmd --permanent --zone=public --add-service=http
@@ -479,22 +484,22 @@ firewall-cmd --permanent --zone=public --add-service=https
 systemctl restart firewalld.service
 ```
 
-8. start nginx service by using below command
+3.5 start nginx service by using below command
 ```
 /usr/sbin/nginx -c /etc/nginx/nginx.conf
 ```
 
-9. check nginx process 
+3.6 check nginx process 
 ```
 ps -ef|grep nginx
 ```
 
-10. to stop nginx service using below command
+3.7 to stop nginx service using below command
 ```
 kill -9 PID-Of-Nginx
 ```
 
-11. add nginx as systemd service by create a file "nginx.service" in /lib/systemd/system/nginx.service
+3.8 add nginx as systemd service by create a file "nginx.service" in /lib/systemd/system/nginx.service
  then copy below into the file
  
  ```
@@ -515,12 +520,12 @@ kill -9 PID-Of-Nginx
  WantedBy=multi-user.target
  ```
  
-then reload the system files
+3.9 then reload the system files
 ```
  systemctl daemon-reload
 ```
 
-12. create startup script 
+3.10 create startup script 
 ```
 sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 sudo nano /etc/init.d/nginx then copy script below
@@ -658,13 +663,13 @@ case "$1" in
 esac
 ```
 
-13. set permission to make this script be executable 
+4.11 set permission to make this script be executable 
 ```
 chmod +x /etc/init.d/nginx
 sudo systemctl enable nginx
 ```
 
-14. To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
+4.12 To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
 ```
 sudo chkconfig nginx on
 sudo service nginx restart
