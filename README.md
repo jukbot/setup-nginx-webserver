@@ -1,4 +1,4 @@
-# Setup and Secure CentOS 7 & Redhat 7
+# Setup an secure CentOS 7 & Redhat 7
 
 ## Introduction
 
