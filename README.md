@@ -290,31 +290,57 @@ Compiling NGINX from the sources provides you with more flexibility: you can add
 For example of core NGINX Modules: 
 
 **http_charset_module**	Adds the specified charset to the “Content-Type” response header field, can convert data from one charset to another.
+
 **http_gzip_module**	Compresses responses using the gzip method, helping to reduce the size of transmitted data by half or more.
+
 **http_ssi_module**	Processes SSI (Server Side Includes) commands in responses passing through it.
+
 **http_userid_module**	Sets cookies suitable for client identification.
+
 **http_access_module**	Limits access to certain client addresses.
+
 **http_auth_basic_module**	Limits access to resources by validating the user name and password using the HTTP Basic Authentication protocol.
+
 **http_autoindex_module**	Processes requests ending with the slash character (‘/’) and produces a directory listing.
+
 **http_geo_module**	Creates variables with values depending on the client IP address.
+
 **http_map_module**	Creates variables whose values depend on values of other variables.
+
 **http_split_clients_module**	Creates variables suitable for A/B testing, also known as split testing.
+
 **http_referer_module**	Blocks access to a site for requests with invalid values in the Referer header field.
+
 **http_rewrite_module**	Changes the request URI using regular expressions and return redirects; conditionally selects configurations. Requires the PCRE library.
+
 **http_proxy_module**	Passes requests to another server.
+
 **http_fastcgi_module**	Passes requests to a FastCGI server
+
 **http_uwsgi_module**	Passes requests to a uwsgi server.
+
 **http_scgi_module**	Passes requests to an SCGI server.
+
 **http_memcached_module**	Obtains responses from a memcached server.
+
 **http_limit_conn_module**	Limits the number of connections per the defined key, in particular, the number of connections from a single IP address.
+
 **http_limit_req_module**	Limits the request processing rate per a defined key, in particular, the processing rate of requests coming from a single IP address.
+
 **http_empty_gif_module**	Emits single-pixel transparent GIF.
+
 **http_browser_module**	Creates variables whose values depend on the value of the “User-Agent” request header field.
+
 **http_upstream_hash_module**	Enables the hash load balancing method.
+
 **http_upstream_ip_hash_module**	Enables the IP hash load balancing method.
+
 **http_upstream_least_conn_module**	Enables the least_conn load balancing method.
+
 **http_upstream_keepalive_module**	Enables keepalive connections.
+
 **http_upstream_zone_module**	Enables the shared memory zone.
+
 
 For example of 3rd Party modules: 
 
