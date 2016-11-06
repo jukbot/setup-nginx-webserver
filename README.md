@@ -345,7 +345,7 @@ You can verify nginx version by type
 nginx -V
 ```
 
-#### Choosing Between a Stable or a Mainline Version
+### Choosing Between a Stable or a Mainline Version
 
 NGINX Open Source is available in 2 versions:
 
@@ -354,9 +354,9 @@ NGINX Open Source is available in 2 versions:
 **The stable version** This version doesn’t have new features, but includes critical bug fixes that are always backported to the mainline version. The stable version is recommended for production servers.
 
 
-#### Prerequisites
+### Prerequisites
 
-#### Step 1 Installing compiler and libraries
+### Step 1 Installing compiler and libraries
 
 To compile nginx from source you need to install compiler and required libraries to build nginx.
 
@@ -374,7 +374,7 @@ sudo yum groupinstall 'Development Tools'
 sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
 ```
 
-#### Step 2 Installing NGINX Dependencies
+### Step 2 Installing NGINX Dependencies
 
 Prior to compiling NGINX from the sources, it is necessary to install its dependencies:
 
@@ -411,7 +411,7 @@ make
 sudo make install
 ```
 
-#### Step 3 Download NGINX source code
+### Step 3 Download NGINX source code
 
 ```
 wget http://nginx.org/download/nginx-1.10.2.tar.gz
