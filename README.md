@@ -285,19 +285,137 @@ openssl version
 
 ### Nginx from source (with ALPN support)
 
+Compiling NGINX from the sources provides you with more flexibility: you can add particular NGINX modules or 3rd party modules and apply latest security patches. 
+
+For example of core NGINX Modules: 
+
+**http_charset_module**	Adds the specified charset to the “Content-Type” response header field, can convert data from one charset to another.
+**http_gzip_module**	Compresses responses using the gzip method, helping to reduce the size of transmitted data by half or more.
+**http_ssi_module**	Processes SSI (Server Side Includes) commands in responses passing through it.
+**http_userid_module**	Sets cookies suitable for client identification.
+**http_access_module**	Limits access to certain client addresses.
+**http_auth_basic_module**	Limits access to resources by validating the user name and password using the HTTP Basic Authentication protocol.
+**http_autoindex_module**	Processes requests ending with the slash character (‘/’) and produces a directory listing.
+**http_geo_module**	Creates variables with values depending on the client IP address.
+**http_map_module**	Creates variables whose values depend on values of other variables.
+**http_split_clients_module**	Creates variables suitable for A/B testing, also known as split testing.
+**http_referer_module**	Blocks access to a site for requests with invalid values in the Referer header field.
+**http_rewrite_module**	Changes the request URI using regular expressions and return redirects; conditionally selects configurations. Requires the PCRE library.
+**http_proxy_module**	Passes requests to another server.
+**http_fastcgi_module**	Passes requests to a FastCGI server
+**http_uwsgi_module**	Passes requests to a uwsgi server.
+**http_scgi_module**	Passes requests to an SCGI server.
+**http_memcached_module**	Obtains responses from a memcached server.
+**http_limit_conn_module**	Limits the number of connections per the defined key, in particular, the number of connections from a single IP address.
+**http_limit_req_module**	Limits the request processing rate per a defined key, in particular, the processing rate of requests coming from a single IP address.
+**http_empty_gif_module**	Emits single-pixel transparent GIF.
+**http_browser_module**	Creates variables whose values depend on the value of the “User-Agent” request header field.
+**http_upstream_hash_module**	Enables the hash load balancing method.
+**http_upstream_ip_hash_module**	Enables the IP hash load balancing method.
+**http_upstream_least_conn_module**	Enables the least_conn load balancing method.
+**http_upstream_keepalive_module**	Enables keepalive connections.
+**http_upstream_zone_module**	Enables the shared memory zone.
+
+For example of 3rd Party modules: 
+
+**ngx_brotli module** - An open source data compression library introducing by Google, based on a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling. (By default nginx bundle with **gzip** compression library)
+ 
+Brotli performance https://www.opencpu.org/posts/brotli-benchmarks/
+
+Installing nginx brotli module https://github.com/google/ngx_brotli
+
+**ngx_pagespeed** - Speeds up your site and reduces page load time by automatically applying web performance best practices to pages and associated assets (CSS, JavaScript, images) without requiring you to modify your existing content or workflow.  
+Rewrites webpages and associated assets to reduce latency and bandwidth
+ 
+Installing page speed module https://github.com/pagespeed/ngx_pagespeed
+
+-------------------------------------------------------------------------------------------------------------------------
+
+View more NGINX 3rd Party Modules: https://www.nginx.com/resources/wiki/modules/
+
+Read more about extending nginx https://www.nginx.com/resources/wiki/extending/
+
+Read more about dynamic modules https://www.nginx.com/blog/dynamic-modules-nginx-1-9-11/
+
+-------------------------------------------------------------------------------------------------------------------------
+
 Before we getting start you need to verify that your nginx was built with OpenSSL that support ALPN feature.
 You can verify nginx version by type
 ```
 nginx -V
 ```
+
+#### Choosing Between a Stable or a Mainline Version
+
+NGINX Open Source is available in 2 versions:
+
+**The mainline version** This version includes the latest features and bugfixes and is always up-to-date. It is reliable, but it may include some experimental modules, and it may also have some number of new bugs.
+
+**The stable version** This version doesn’t have new features, but includes critical bug fixes that are always backported to the mainline version. The stable version is recommended for production servers.
+
+
 #### Prerequisites
 
-1. download, config, make and then make install lastest openssl, zlib, pcre from source website (Note that pcre)
-2. yum groupinstall 'Development Tools' -y && yum update
-3. sudo yum install wget curl unzip gcc-c++ pcre-devel zlib-devel
-4. download latest nginx source and cd into it
-5. config below
+#### Step 1 Installing compiler and libraries
+
+To compile nginx from source you need to install compiler and required libraries to build nginx.
+
+1.1 Need to install epel repo for additional libraries, if not install by typing
 ```
+sudo yum install -y epel-release
+```
+1.2 Then update the os environment
+```
+sudo yum update 
+```
+1.3 Install compiler 
+```
+sudo yum groupinstall 'Development Tools' -y
+sudo yum install wget curl unzip gcc-c++ pcre-devel zlib-devel -y
+```
+
+#### Step 2 Installing NGINX Dependencies
+
+Prior to compiling NGINX from the sources, it is necessary to install its dependencies:
+
+2.1 Install PCRE library
+The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
+```
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.39.tar.gz
+tar -zxf pcre-8.39.tar.gz
+cd pcre-8.39
+./configure
+make
+sudo make install
+```
+
+2.2 Install ZLIB library
+The zlib library required by NGINX Gzip module for headers compression:
+```
+wget http://zlib.net/zlib-1.2.8.tar.gz
+tar -zxf zlib-1.2.8.tar.gz
+cd zlib-1.2.8
+./configure
+make
+sudo make install
+```
+
+2.3 Install OpenSSL library (lastest)
+The OpenSSL library required by NGINX SSL modules to support the HTTPS protocol:
+```
+wget https://www.openssl.org/source/openssl-1.0.2j.tar.gz
+tar -zxf openssl-1.0.2f.tar.gz
+cd openssl-1.0.2f
+./configure darwin64-x86_64-cc --prefix=/usr
+make
+sudo make install
+```
+
+#### Step 3 Download NGINX source code
+```
+wget http://nginx.org/download/nginx-1.10.2.tar.gz
+tar zxf nginx-1.xx.x.tar.gz
+cd nginx-1.xx.x
 ./configure \
 --prefix=/etc/nginx \
 --sbin-path=/usr/sbin/nginx \
@@ -341,12 +459,20 @@ nginx -V
 --with-stream_ssl_module \
 --with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic'
 ```
-6. 
+
+6. Compile and install the build:
 ```
-make && make install
+make
+sudo make install
 ```
 
-7. config firewall
+7. After the installation is finished, run NGINX Open Source:
+```
+sudo nginx
+```
+
+8. Config the firewall
+
 ```
 firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --permanent --zone=public --add-service=https
@@ -362,12 +488,15 @@ systemctl restart firewalld.service
 ```
 ps -ef|grep nginx
 ```
+
 10. to stop nginx service using below command
 ```
 kill -9 PID-Of-Nginx
 ```
+
 11. add nginx as systemd service by create a file "nginx.service" in /lib/systemd/system/nginx.service
  then copy below into the file
+ 
  ```
  [Unit]
  Description=The NGINX HTTP and reverse proxy server
@@ -384,15 +513,19 @@ kill -9 PID-Of-Nginx
  
  [Install]
  WantedBy=multi-user.target
-
- then reload the system files
- systemctl daemon-reload
  ```
+ 
+then reload the system files
+```
+ systemctl daemon-reload
+```
+
 12. create startup script 
 ```
 sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 sudo nano /etc/init.d/nginx then copy script below
 ```
+
 ```
 #!/bin/sh
 #
@@ -524,11 +657,13 @@ case "$1" in
         exit 2
 esac
 ```
+
 13. set permission to make this script be executable 
 ```
 chmod +x /etc/init.d/nginx
 sudo systemctl enable nginx
 ```
+
 14. To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
 ```
 sudo chkconfig nginx on
