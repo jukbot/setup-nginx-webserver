@@ -134,7 +134,7 @@ date
 ls -l /etc/localtime
 ```
 
-### Step 4 - Enable the IPTables Firewall
+### Step 4 - Enable the IPTables Firewall (Recommended)
 
 By default, the active firewall application on a newly activated CentOS 7 server is FirewallD. Though it is a good replacement for IPTables, many security applications still do not have support for it. So if you'll be using any of those applications, like OSSEC HIDS, it's best to disable/uninstall FirewallD.
 
@@ -259,7 +259,7 @@ sudo yum --disablerepo="*" --enablerepo="epel" list available
 
 Example: Search and install htop package from epel repo on a CentOS/RHEL 7.x
 
-## search it ##
+## Search it ##
 ```
 sudo yum search htop
 sudo yum info htop
@@ -275,13 +275,28 @@ Red Hat Enterprise Linux (RHEL) version 7.x.
 
 ***Due to TLS False Start was disabled in Google Chrome from version 20 (2012) onward except for websites with the earlier Next Protocol Negotiation (NPN) extension. NPN was replaced with a reworked version, ALPN. On July 11, 2014, ALPN was published as RFC 7301.***
 
+####Why Has HTTP/2 Stopped Working for Users of the New Version of Google Chrome?
+
+As of May 2016, approximately 8% of the world’s websites are accessible over HTTP/2. These websites all use SSL/TLS, because browsers that support HTTP/2 only upgrade the connection to the new standard if SSL/TLS is also in use. The vast majority of sites – those running NGINX and LiteSpeed – depend on OpenSSL’s implementation of NPN or ALPN to upgrade to HTTP/2.
+
+**OpenSSL added ALPN support on January 2015, in version 1.0.2. Versions 1.0.1 and earlier do not support ALPN.**
+
+Unlike a standalone web server like NGINX, OpenSSL is a core operating system library that is used by many of the packages shipped as part of a modern Linux operating system. To ensure the operating system is stable and reliable, OS distributors do not make major updates to packages such as OpenSSL during the lifetime of each release. They do backport critical OpenSSL patches to their supported versions of OpenSSL to protect their users against OpenSSL vulnerabilities. They do not backport new features, particularly those which change the ABI of essential shared libraries.
+
+
+The table summarizes operating system support for ALPN and NPN.
+
 <p align="center">
   <a href="https://www.nginx.com/blog/supporting-http2-google-chrome-users/" target="_blank">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/alpn_os_support.PNG" alt="OS that support ALPN"/>
   </a>
 </p>
 
+As you can see, only Ubuntu 16.04 LTS supports ALPN. This means that if you’re running your website on any other major operating system, the OpenSSL version shipped with the operating system does not support ALPN and Chrome users will be downgraded to HTTP/1.
+
 So to enable HTTP/2 on ALPN in chrome browser you need to be sure that you have already installed ***OpenSSL that supported ALPN** which is version >= 1.0.2.
+
+According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 
 You can verify openssl version by type
 ```
@@ -289,7 +304,7 @@ openssl version
 ```
 
 
-### Nginx from source (with ALPN support)
+### Nginx from source (with ALPN support + HTTP2)
 
 Compiling NGINX from the sources provides you with more flexibility: you can add particular NGINX modules or 3rd party modules and apply latest security patches. 
 
@@ -371,8 +386,8 @@ Read more about dynamic modules https://www.nginx.com/blog/dynamic-modules-nginx
 
 -------------------------------------------------------------------------------------------------------------------------
 
-Before we getting start you need to verify that your nginx was built with OpenSSL that support ALPN feature.
-You can verify nginx version and opensssl that built by typing
+**!! Before we getting start you need to verify that your nginx was built with OpenSSL that support ALPN feature.
+You can verify nginx version and opensssl that built by typing**
 ```
 nginx -V
 nginx version: nginx/1.9.13 (nginx-plus-r9)
@@ -382,7 +397,6 @@ built with OpenSSL 1.0.1f 6 Jan 2014
 
 **!! To get ALPN and NPN	support openssl version must be 1.0.2g or higher. If not see "OpenSSL (with ALPN support)" section.**
 
-See which operating system support ALPN and NPN https://www.nginx.com/blog/supporting-http2-google-chrome-users/
 
 ### Choosing Between a Stable or a Mainline Version
 
@@ -702,13 +716,13 @@ case "$1" in
 esac
 ```
 
-4.11 set permission to make this script be executable 
+3.11 set permission to make this script be executable 
 ```
 chmod +x /etc/init.d/nginx
 sudo systemctl enable nginx
 ```
 
-4.12 To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
+3.12 To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
 ```
 sudo chkconfig nginx on
 sudo service nginx restart
@@ -753,7 +767,16 @@ libresolv.so.2
 libselinux.so.1
 ```
 
-### PHP 7 (Incomplete)
+### Step 4 Setup Nginx web server (SSL + HTTP2)
+
+Sorry, this section is currently in progress.
+
+### Step 5 Install and config certificate (SSL + HTTP)
+
+Sorry, this section is currently in progress.
+
+
+### PHP 7
 
 If you have installed older version you must remove it first by following command.
 
@@ -770,8 +793,12 @@ sudo yum install php70u-fpm-nginx php70u-cli php70u-mysqlnd
 Sorry, this section is currently in progress.
 
 
+### Drupal 8
 
-## Set Up Firewall (Simple)
+Sorry, this section is currently in progress.
+
+
+## Set Up FirewallD
 
 ### Introduction
 
@@ -836,11 +863,6 @@ If, after testing, everything works as expected, you should make sure the firewa
 sudo systemctl enable firewalld
 ```
 Remember that you will have to explicitly open the firewall (with services or ports) for any additional services that you may configure later.
-
-
-## Set Up Firewall (Advanced)
-
-Sorry, this section is currently in progress.
 
 
 ## Hardening and Enhanced Linux security
