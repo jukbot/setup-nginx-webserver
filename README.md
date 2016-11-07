@@ -1,5 +1,7 @@
 # Setup a Secure CentOS 7 Complete Guide
 
+Note: This article compatibility with RedHat Enterprise Linux 7, except some repository links need to change upto vendors.
+
 ## Introduction
 
 The new CentOS 7 server has to be customized before it can be put into use as a production system. In this article, will help you to increase the security and usability of your server and will give you a solid foundation for subsequent actions.
