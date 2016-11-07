@@ -18,6 +18,16 @@ or
 ssh root@SERVER_IP_ADDRESS
 ```
 
+To view current ip of server in CentOS
+```
+# For minimal install
+ip addr
+```
+or
+```
+ifconfig
+```
+
 Complete the login process by accepting the warning about host authenticity, if it appears, then providing your root authentication (password or private key). If it is your first time logging into the server, with a password, you will also be prompted to change the root password.
 
 The root user is the administrative user in a Linux environment that has very broad privileges. Because of the heightened privileges of the root account, you are actually discouraged from using it on a regular basis. This is because part of the power inherent with the root account is the ability to make very destructive changes, even by accident.
@@ -261,7 +271,7 @@ sudo yum --disablerepo="*" --enablerepo="epel" list available
 
 Example: Search and install htop package from epel repo on a CentOS/RHEL 7.x
 
-## Search it ##
+### Search it 
 ```
 sudo yum search htop
 sudo yum info htop
@@ -271,7 +281,11 @@ sudo yum install htop
 And, there you have it, a larger number of packages to install from EPEL repo on a CentOS and 
 Red Hat Enterprise Linux (RHEL) version 7.x.
 
+
 ### OpenSSL(with ALPN support)
+
+**OpenSSL** is a software library to be used in applications that need to secure communications against eavesdropping or need to ascertain the identity of the party at the other end. It has found wide use in internet web servers, serving a majority of all web sites.
+
 
 **Application-Layer Protocol Negotiation (ALPN)** is a Transport Layer Security (TLS) extension for application layer protocol negotiation. ALPN allows the application layer to negotiate which protocol should be performed over a secure connection in a manner which avoids additional round trips and which is independent of the application layer protocols. It is used by HTTP/2.
 
@@ -300,7 +314,55 @@ So to enable HTTP/2 on ALPN in chrome browser you need to be sure that you have 
 
 According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 
-You can verify openssl version by type
+The following steps describe how to upgrade OpenSSL on CentOS 7
+
+1. Verify the current openssl version by command
+```
+openssl version
+OpenSSL 1.0.1e-fips 11 Feb 2013
+```
+
+2. To view the lastest openssl package from base repository
+```
+yum info openssl
+```
+
+3. Download the latest version of OpenSSL, do as follows:
+```
+cd /usr/src
+wget https://www.openssl.org/source/openssl-1.0.2-latest.tar.gz
+tar -zxf openssl-1.0.2-latest.tar.gz
+```
+
+Note: If you want to install other version you can download it from https://www.openssl.org/source/
+
+4. Go to the source directory, then generate a config file by follow commands
+```
+cd openssl-1.0.2j
+./config
+```
+
+5. Compile the source, test and then install the package (must login as root)
+```
+make
+make test
+make install
+```
+
+Note: This will take a while upon CPU capacity. If your CPU have more than 1 core you can add suffix -j4 for using 4 cores to compile.
+For example: make -j4 to use 4 cores to compile the source code.
+
+6. Move old openssl installed version to the root folder for backup or you can delete it
+```
+mv /usr/bin/openssl /root/
+```
+
+7. Crate a symbolic link
+```
+ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+```
+
+8. Verify the OpenSSL version 
 ```
 openssl version
 ```
