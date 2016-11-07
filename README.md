@@ -776,28 +776,6 @@ Sorry, this section is currently in progress.
 Sorry, this section is currently in progress.
 
 
-### PHP 7
-
-If you have installed older version you must remove it first by following command.
-
-```
-sudo yum remove php-fpm php-cli php-common
-```
-
-Install the new PHP 7 packages from IUS. Again, press y and Enter when prompted.
-
-```
-sudo yum install php70u-fpm-nginx php70u-cli php70u-mysqlnd
-```
-
-Sorry, this section is currently in progress.
-
-
-### Drupal 8
-
-Sorry, this section is currently in progress.
-
-
 ## Set Up FirewallD
 
 ### Introduction
@@ -863,8 +841,3 @@ If, after testing, everything works as expected, you should make sure the firewa
 sudo systemctl enable firewalld
 ```
 Remember that you will have to explicitly open the firewall (with services or ports) for any additional services that you may configure later.
-
-
-## Hardening and Enhanced Linux security
-
-Sorry, this section is currently in progress.
