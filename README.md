@@ -529,14 +529,10 @@ sudo make install
 
 2.3 Install OpenSSL library (lastest)
 The OpenSSL library required by NGINX SSL modules to support the HTTPS protocol:
-```
-wget https://www.openssl.org/source/openssl-1.0.2j.tar.gz
-tar -zxf openssl-1.0.2f.tar.gz
-cd openssl-1.0.2f
-./configure darwin64-x86_64-cc --prefix=/usr
-make
-sudo make install
-```
+
+Please see the OpenSSL (with ALPN support) section
+
+
 
 ### Step 3 Download NGINX source code
 
