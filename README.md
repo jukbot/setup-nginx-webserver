@@ -397,7 +397,8 @@ built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.1)
 built with OpenSSL 1.0.1f 6 Jan 2014
 ```
 
-**!! To get ALPN and NPN	support openssl version must be 1.0.2g or higher. If not see "OpenSSL (with ALPN support)" section.**
+**!! To get ALPN and NPN	support openssl version must be 1.0.2g or higher. 
+If it's not, please see "OpenSSL (with ALPN support)" section then upgrade and install.**
 
 
 ### Choosing Between a Stable or a Mainline Version
