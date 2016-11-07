@@ -1,4 +1,4 @@
-# Setup a secure CentOS 7
+# Setup a Secure CentOS 7 Complete Guide
 
 ## Introduction
 
