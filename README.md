@@ -315,7 +315,7 @@ So to enable HTTP/2 on ALPN in chrome browser you need to be sure that you have 
 
 According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 
-The following steps describe how to upgrade OpenSSL on CentOS 7
+The following steps describe how to upgrade OpenSSL 
 
 1). Verify the current openssl version by command
 ```
@@ -358,7 +358,7 @@ For example: make -j4 to use 4 cores to compile the source code.
 mv /usr/bin/openssl /root/
 ```
 
-7). Crate a symbolic link
+7). Create a symbolic link
 ```
 ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
 ```
