@@ -292,7 +292,7 @@ Red Hat Enterprise Linux (RHEL) version 7.x.
 
 ***Due to TLS False Start was disabled in Google Chrome from version 20 (2012) onward except for websites with the earlier Next Protocol Negotiation (NPN) extension. NPN was replaced with a reworked version, ALPN. On July 11, 2014, ALPN was published as RFC 7301.***
 
-####Why Has HTTP/2 Stopped Working for Users of the New Version of Google Chrome?
+#### Why Has HTTP/2 Stopped Working for Users of the New Version of Google Chrome?
 
 As of May 2016, approximately 8% of the world’s websites are accessible over HTTP/2. These websites all use SSL/TLS, because browsers that support HTTP/2 only upgrade the connection to the new standard if SSL/TLS is also in use. The vast majority of sites – those running NGINX and LiteSpeed – depend on OpenSSL’s implementation of NPN or ALPN to upgrade to HTTP/2.
 
@@ -300,10 +300,8 @@ As of May 2016, approximately 8% of the world’s websites are accessible over H
 
 Unlike a standalone web server like NGINX, OpenSSL is a core operating system library that is used by many of the packages shipped as part of a modern Linux operating system. To ensure the operating system is stable and reliable, OS distributors do not make major updates to packages such as OpenSSL during the lifetime of each release. They do backport critical OpenSSL patches to their supported versions of OpenSSL to protect their users against OpenSSL vulnerabilities. They do not backport new features, particularly those which change the ABI of essential shared libraries.
 
-
-The table summarizes operating system support for ALPN and NPN.
-
 <p align="center">
+The table summarizes operating system support for ALPN and NPN.
   <a href="https://www.nginx.com/blog/supporting-http2-google-chrome-users/" target="_blank">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/alpn_os_support.PNG" alt="OS that support ALPN"/>
   </a>
@@ -315,7 +313,14 @@ So to enable HTTP/2 on ALPN in chrome browser you need to be sure that you have 
 
 According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 
-The following steps describe how to upgrade OpenSSL 
+
+### The following steps describe how to upgrade OpenSSL 
+
+To compile openssl from source you need to install compiler and required libraries to build nginx.
+```
+sudo yum groupinstall 'Development Tools'
+sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
+```
 
 1). Verify the current openssl version by command
 ```
@@ -478,7 +483,7 @@ NGINX Open Source is available in 2 versions:
 
 ### Prerequisites
 
-### Step 1 Installing compiler and libraries
+### Step 1 Installing compiler and libraries (If you already installed skip this step)
 
 To compile nginx from source you need to install compiler and required libraries to build nginx.
 
@@ -490,7 +495,7 @@ sudo yum install -y epel-release
 ```
 sudo yum update 
 ```
-1.3 Install compiler 
+1.3 Install the compiler 
 ```
 sudo yum groupinstall 'Development Tools'
 sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
