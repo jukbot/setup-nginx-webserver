@@ -590,13 +590,21 @@ make
 sudo make install
 ```
 
-3.3 After the installation is finished, run NGINX Open Source:
+3.3 After the installation process has finished with success add nginx system user (with /etc/nginx/ as his home directory and with no valid shell), the user that Nginx will run as by issuing the following command.
+
 ```
-sudo nginx
+useradd -d /etc/nginx/ -s /sbin/nologin nginx
 ```
 
-3.4 Config the firewall
+3.4 Change user in nginx configure file
+```
+vi /etc/nginx/nginx.conf
+# Then change the user from nobody to nginx, then save and exit.
 
+user nginx;
+```
+
+3.5 Config the firewall
 ```
 firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --permanent --zone=public --add-service=https
@@ -801,7 +809,6 @@ nginx version: nginx/1.9.13 (nginx-plus-r9)
 built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.1)
 built with OpenSSL 1.0.1f 6 Jan 2014
 ```
-
 
 
 NOTE: If you want to install speedtest module (By Google) you must installed following libraries
