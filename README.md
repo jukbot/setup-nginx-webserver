@@ -316,18 +316,18 @@ According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 
 The following steps describe how to upgrade OpenSSL on CentOS 7
 
-1. Verify the current openssl version by command
+1). Verify the current openssl version by command
 ```
 openssl version
 OpenSSL 1.0.1e-fips 11 Feb 2013
 ```
 
-2. To view the lastest openssl package from base repository
+2). To view the lastest openssl package from base repository
 ```
 yum info openssl
 ```
 
-3. Download the latest version of OpenSSL, do as follows:
+3). Download the latest version of OpenSSL, do as follows:
 ```
 cd /usr/src
 wget https://www.openssl.org/source/openssl-1.0.2-latest.tar.gz
@@ -336,13 +336,13 @@ tar -zxf openssl-1.0.2-latest.tar.gz
 
 Note: If you want to install other version you can download it from https://www.openssl.org/source/
 
-4. Go to the source directory, then generate a config file by follow commands
+4). Go to the source directory, then generate a config file by follow commands
 ```
 cd openssl-1.0.2j
 ./config
 ```
 
-5. Compile the source, test and then install the package (must login as root)
+5). Compile the source, test and then install the package (must login as root)
 ```
 make
 make test
@@ -352,20 +352,23 @@ make install
 Note: This will take a while upon CPU capacity. If your CPU have more than 1 core you can add suffix -j4 for using 4 cores to compile.
 For example: make -j4 to use 4 cores to compile the source code.
 
-6. Move old openssl installed version to the root folder for backup or you can delete it
+6). Move old openssl installed version to the root folder for backup or you can delete it
 ```
 mv /usr/bin/openssl /root/
 ```
 
-7. Crate a symbolic link
+7). Crate a symbolic link
 ```
 ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
 ```
 
-8. Verify the OpenSSL version 
+8). Verify the OpenSSL version 
 ```
 openssl version
+OpenSSL 1.0.2j  26 Sep 2016
 ```
+
+!! Done, easy right ? !!
 
 
 ### Nginx from source (with ALPN support + HTTP2)
