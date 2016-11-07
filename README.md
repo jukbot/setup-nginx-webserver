@@ -275,6 +275,12 @@ Red Hat Enterprise Linux (RHEL) version 7.x.
 
 ***Due to TLS False Start was disabled in Google Chrome from version 20 (2012) onward except for websites with the earlier Next Protocol Negotiation (NPN) extension. NPN was replaced with a reworked version, ALPN. On July 11, 2014, ALPN was published as RFC 7301.***
 
+<p align="center">
+  <a href="https://angularclass.com" target="_blank">
+    <img src="https://cloud.githubusercontent.com/assets/1016365/9863762/a84fed4a-5af7-11e5-9dde-d5da01e797e7.png" alt="Webpack and Angular 2" width="500" height="320"/>
+  </a>
+</p>
+
 So to enable HTTP/2 on ALPN in chrome browser you need to be sure that you have already installed ***OpenSSL that supported ALPN** which is version >= 1.0.2.
 
 You can verify openssl version by type
@@ -366,10 +372,17 @@ Read more about dynamic modules https://www.nginx.com/blog/dynamic-modules-nginx
 -------------------------------------------------------------------------------------------------------------------------
 
 Before we getting start you need to verify that your nginx was built with OpenSSL that support ALPN feature.
-You can verify nginx version by type
+You can verify nginx version and opensssl that built by typing
 ```
 nginx -V
+nginx version: nginx/1.9.13 (nginx-plus-r9)
+built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.1)
+built with OpenSSL 1.0.1f 6 Jan 2014
 ```
+
+**!! To get ALPN and NPN	support openssl version must be 1.0.2g or higher. If not see "OpenSSL (with ALPN support)" section.**
+
+See which operating system support ALPN and NPN https://www.nginx.com/blog/supporting-http2-google-chrome-users/
 
 ### Choosing Between a Stable or a Mainline Version
 
