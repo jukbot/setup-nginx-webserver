@@ -1,4 +1,4 @@
-# Setup a Secure CentOS 7 Complete Guide
+# Setup a perfect CentOS 7 Complete Guide
 
 Please read: This article **compatibility with RedHat Enterprise Linux 7**, except some repository links need to change upon vendors and processor architecture of your hardware.
 
