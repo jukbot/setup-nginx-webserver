@@ -829,3 +829,7 @@ Remember that you will have to explicitly open the firewall (with services or po
 
 Sorry, this section is currently in progress.
 
+
+## Hardening and Enhanced Linux security
+
+Sorry, this section is currently in progress.
