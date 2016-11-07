@@ -459,19 +459,6 @@ Read more about dynamic modules https://www.nginx.com/blog/dynamic-modules-nginx
 
 -------------------------------------------------------------------------------------------------------------------------
 
-**!! Before we getting start you need to verify that your nginx was built with OpenSSL that support ALPN feature.
-You can verify nginx version and opensssl that built by typing**
-```
-nginx -V
-nginx version: nginx/1.9.13 (nginx-plus-r9)
-built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.1)
-built with OpenSSL 1.0.1f 6 Jan 2014
-```
-
-**!! To get ALPN and NPN	support openssl version must be 1.0.2g or higher. 
-If it's not, please see "OpenSSL (with ALPN support)" section then upgrade and install.**
-
-
 ### Choosing Between a Stable or a Mainline Version
 
 NGINX Open Source is available in 2 versions:
@@ -482,6 +469,13 @@ NGINX Open Source is available in 2 versions:
 
 
 ### Prerequisites
+
+**!! Before we getting start you need to verify that you have installed opnssl with ALPN feature support**
+```
+openssl version
+```
+The openssl version must be 1.0.2 or higher.
+
 
 ### Step 1 Installing compiler and libraries (If you already installed skip this step)
 
@@ -541,6 +535,8 @@ wget http://nginx.org/download/nginx-1.10.2.tar.gz
 tar zxf nginx-1.xx.x.tar.gz
 cd nginx-1.xx.x
 ```
+
+Other version please see https://nginx.org/en/download.html
 
 3.1 Config the nginx for built
 ```
@@ -797,6 +793,16 @@ sudo systemctl enable nginx
 sudo chkconfig nginx on
 sudo service nginx restart
 ```
+
+Final to verify nginx version and opensssl that built by type**
+```
+nginx -V
+nginx version: nginx/1.9.13 (nginx-plus-r9)
+built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.1)
+built with OpenSSL 1.0.1f 6 Jan 2014
+```
+
+
 
 NOTE: If you want to install speedtest module (By Google) you must installed following libraries
 ```
