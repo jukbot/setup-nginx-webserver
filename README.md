@@ -2,6 +2,7 @@
 
 Please read: This article **compatibility with RedHat Enterprise Linux 7**, except some repository links need to change upon vendors and processor architecture of your hardware.
 
+
 ## Introduction
 
 The new CentOS 7 server has to be customized before it can be put into use as a production system. In this article, will help you to increase the security and usability of your server with the lastest stable packages and will give you a solid foundation for subsequent actions.
