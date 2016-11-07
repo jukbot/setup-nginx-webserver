@@ -629,27 +629,27 @@ kill -9 PID-Of-Nginx
 3.8 add nginx as systemd service by create a file "nginx.service" in /lib/systemd/system/nginx.service
  then copy below into the file
  
- ```
- [Unit]
- Description=The NGINX HTTP and reverse proxy server
- After=syslog.target network.target remote-fs.target nss-lookup.target
+```
+[Unit]
+Description=The NGINX HTTP and reverse proxy server
+After=syslog.target network.target remote-fs.target nss-lookup.target
  
- [Service]
- Type=forking
- PIDFile=/var/run/nginx.pid
- ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx.conf
- ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
- ExecReload=/bin/kill -s HUP $MAINPID
- ExecStop=/bin/kill -s QUIT $MAINPID
- PrivateTmp=true
+[Service]
+Type=forking
+PIDFile=/var/run/nginx.pid
+ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx.conf
+ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s QUIT $MAINPID
+PrivateTmp=true
  
- [Install]
- WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
  ```
  
 3.9 then reload the system files
 ```
- systemctl daemon-reload
+systemctl daemon-reload
 ```
 
 3.10 create startup script 
@@ -802,7 +802,7 @@ sudo chkconfig nginx on
 sudo service nginx restart
 ```
 
-Final to verify nginx version and opensssl that built by type**
+3.13 Finally, to verify nginx version and opensssl that built by type**
 ```
 nginx -V
 nginx version: nginx/1.9.13 (nginx-plus-r9)
@@ -810,7 +810,21 @@ built by gcc 4.8.4 (Ubuntu 4.8.4-2ubuntu1~14.04.1)
 built with OpenSSL 1.0.1f 6 Jan 2014
 ```
 
+3.14 Start nginx 
+```
+sudo nginx
+```
 
+If you see this error
+```
+nginx: [emerg] mkdir() "/var/cache/nginx/client_temp" failed (2: No such file or directory)
+```
+
+Then manually create the file /var/cache/nginx/client_temp.
+```
+sudo mkdir /var/cache/nginx
+sudo touch /var/cache/nginx/client_temp
+```
 NOTE: If you want to install speedtest module (By Google) you must installed following libraries
 ```
 gcc 
