@@ -702,7 +702,7 @@ sudo service nginx restart
 ```
 
 NOTE: If you want to install speedtest module (By Google) you must installed following libraries
-
+```
 gcc 
 gcc-c++ 
 pcre-devel 
@@ -738,7 +738,7 @@ libkrb5support.so.0
 libkeyutils.so.1
 libresolv.so.2
 libselinux.so.1
-
+```
 
 ### PHP 7 (Incomplete)
 
@@ -754,11 +754,11 @@ Install the new PHP 7 packages from IUS. Again, press y and Enter when prompted.
 sudo yum install php70u-fpm-nginx php70u-cli php70u-mysqlnd
 ```
 
+Sorry, this section is currently in progress.
 
 
 
-
-## Set Up Firewall
+## Set Up Firewall (Simple)
 
 ### Introduction
 
@@ -823,4 +823,9 @@ If, after testing, everything works as expected, you should make sure the firewa
 sudo systemctl enable firewalld
 ```
 Remember that you will have to explicitly open the firewall (with services or ports) for any additional services that you may configure later.
+
+
+## Set Up Firewall (Advanced)
+
+Sorry, this section is currently in progress.
 
