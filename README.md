@@ -1,7 +1,11 @@
 # Setup a perfect CentOS 7 Complete Guide
 
-Please read: This article **compatibility with RedHat Enterprise Linux 7**, except some repository links need to change upon vendors and processor architecture of your hardware.
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
+</p>
 
+<p align="center">
+Please read: This article **compatibility with RedHat Enterprise Linux 7**, except some repository links need to change upon vendors and processor architecture of your hardware.</p>
 
 ## Introduction
 
@@ -297,6 +301,10 @@ Red Hat Enterprise Linux (RHEL) version 7.x.
 
 ### OpenSSL(with ALPN support)
 
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/OpenSSL-Logo.png" alt="OPENSSL"/>
+</p>
+
 **OpenSSL** is a software library to be used in applications that need to secure communications against eavesdropping or need to ascertain the identity of the party at the other end. It has found wide use in internet web servers, serving a majority of all web sites.
 
 
@@ -390,6 +398,10 @@ OpenSSL 1.0.2j  26 Sep 2016
 
 
 ### Nginx from source (with ALPN support + HTTP2)
+
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/NGINX_logo.png" alt="NGINX"/>
+</p>
 
 Compiling NGINX from the sources provides you with more flexibility: you can add particular NGINX modules or 3rd party modules and apply latest security patches. 
 
@@ -884,9 +896,15 @@ Sorry, this section is currently in progress.
 
 Sorry, this section is currently in progress.
 
-
-### Drupal 8 (CMS) with PHP7.0, Nginx, MariaDB 10.1 and PHP APC enabled 
+## Drupal 8 (CMS), PHP7.0, Nginx, MariaDB 10.1 and PHP APC enabled 
 (Alternative PHP Cache / Opcode Cache)
+
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/drupal%208%20logo.png" alt="DRUPAL"/>
+</p>
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/php7_logo.svg" alt="PHP7"/>
+</p>
 
 First add repository into CentOS 7
 ```
