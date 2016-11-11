@@ -425,7 +425,7 @@ For example of core NGINX Modules:
 
 **http_uwsgi_module**	Passes requests to a uwsgi server.
 
-**http_scgi_module**	Passes requests to an SCGI server.
+**http_scgi_module**	Passes requests to an SCGI server.d
 
 **http_memcached_module**	Obtains responses from a memcached server.
 
@@ -884,6 +884,22 @@ Sorry, this section is currently in progress.
 
 Sorry, this section is currently in progress.
 
+
+### Drupal 8 (CMS) with PHP7.0
+
+First add repository into CentOS 7
+```
+## Remi Dependency on CentOS 7 and Red Hat (RHEL) 7 ##
+rpm -Uvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
+
+## CentOS 7 and Red Hat (RHEL) 7 ##
+rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
+```
+
+Then install php 7 required packages
+```
+yum --enablerepo=remi-php70 install php-fpm php-common php-mysqlnd php-cli php-mbstring php-xml php-gd php-json php-curl php-pdo php-opcache php-opcache php-pecl-apcu php-pear
+```
 
 ## Set Up FirewallD
 
