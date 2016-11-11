@@ -885,7 +885,8 @@ Sorry, this section is currently in progress.
 Sorry, this section is currently in progress.
 
 
-### Drupal 8 (CMS) with PHP7.0
+### Drupal 8 (CMS) with PHP7.0, Nginx, MariaDB 10.1 and PHP APC enabled 
+(Alternative PHP Cache / Opcode Cache)
 
 First add repository into CentOS 7
 ```
@@ -899,6 +900,18 @@ rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 Then install php 7 required packages
 ```
 yum --enablerepo=remi-php70 install php-fpm php-common php-mysqlnd php-cli php-mbstring php-xml php-gd php-json php-curl php-pdo php-opcache php-opcache php-pecl-apcu php-pear
+```
+
+Start php-fpm (FastCGI Process Manager)
+```
+/etc/init.d/php-fpm start ## use restart after update
+## OR ##
+service php-fpm start ## use restart after update
+```
+
+Auto start php-fpm on boot
+```
+systemctl enable php-fpm.service
 ```
 
 ## Set Up FirewallD
