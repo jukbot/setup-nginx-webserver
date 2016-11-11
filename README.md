@@ -914,7 +914,7 @@ rpm -Uvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch
 rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
 ```
 
-Then install php 7 required packages
+Then install required packages
 ```
 yum --enablerepo=remi-php70 install php-fpm php-common php-mysqlnd php-cli php-mbstring php-xml php-gd php-json php-curl php-pdo php-opcache php-opcache php-pecl-apcu php-pear
 ```
