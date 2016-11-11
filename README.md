@@ -229,6 +229,18 @@ sudo yum -y upgrade
 
 ## Install Common Packages
 
+### Yum Utils 
+
+**Yum-utils** is a collection of utilities and plugins extending and supplementing yum in different ways. It included in the base repo (which is enabled by default). However if you install as minimal you have to install it manually by typing. 
+
+```
+sudo yum -y install yum-utils
+```
+
+Read more about yum-utils 
+https://www.if-not-true-then-false.com/2012/delete-remove-old-kernels-on-fedora-centos-red-hat-rhel/
+http://www.tecmint.com/linux-yum-package-management-with-yum-utils/
+
 ### Extra Packages for Enterprise Linux (EPEL)
 
 How do I install the extra repositories such as Fedora EPEL repo on a Red Hat Enterprise Linux server version 7.x or CentOS Linux server version 7.x?
