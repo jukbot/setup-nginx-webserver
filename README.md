@@ -1,4 +1,4 @@
-# Setup a perfect CentOS 7 Complete Guide
+# Setup a Perfect CentOS 7 Gide
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
