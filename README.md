@@ -889,11 +889,19 @@ libselinux.so.1
 
 ### Step 4 Setup Nginx web server (SSL + HTTP2)
 
-Sorry, this section is currently in progress.
-
-### Step 5 Install and config certificate (SSL + HTTP)
+For using http2 you need to have certificate (SSL) installed
 
 Sorry, this section is currently in progress.
+
+### Step 5 Install and config certificate (SSL)
+
+Sorry, this section is currently in progress.
+
+Read more about 7 Tips for Faster HTTP/2 Performance
+https://www.nginx.com/blog/7-tips-for-faster-http2-performance/
+
+### Step 6 Install and config certificate (SSL)
+
 
 ## Drupal 8 (CMS), PHP7.0, Nginx, MariaDB 10.1 and PHP APC enabled 
 (Alternative PHP Cache / Opcode Cache)
