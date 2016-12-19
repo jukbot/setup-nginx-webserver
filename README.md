@@ -891,7 +891,232 @@ libselinux.so.1
 
 For using http2 you need to have certificate (SSL) installed
 
-Sorry, this section is currently in progress.
+1. Go to nginx global file directory
+
+```sudo su
+cd /etc/nginx/
+vi nginx.conf
+```
+
+2. Config the file as below 
+
+```
+user  nginx;
+worker_processes auto;
+worker_cpu_affinity auto;
+pid   /var/run/nginx.pid;
+
+events {
+    worker_connections 1024; #up on your traffic and nw capacity
+    use epoll;
+    multi_accept on;
+}
+
+http {
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    types_hash_max_size 2048; #host bucket
+    reset_timedout_connection on;
+    server_tokens off; #hide server version
+    server_name_in_redirect off;
+    limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
+    limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=5r/s;
+
+    ##
+    # Buffer Limit Settings
+    ##
+    client_body_buffer_size      128k;
+    client_max_body_size         10m;
+    client_body_timeout          10;
+    client_header_buffer_size    1k;
+    client_header_timeout        10;
+    large_client_header_buffers  2 1k;
+    output_buffers               1 32k;
+    postpone_output              1460;
+    keepalive_timeout            60;
+    keepalive_requests           100000;
+    send_timeout                 30;
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    ##
+    # Logging Settings
+    ##
+    access_log /var/log/nginx/access.log;
+    error_log /var/log/nginx/error.log error;
+    access_log off;
+    log_not_found off;
+
+    ##
+    # Gzip Settings
+    ##
+    gzip on;
+    gzip_buffers                16 8k;
+    gzip_comp_level                 6;
+    gzip_disable              "msie6";
+    gzip_http_version             1.1;
+    gzip_vary                      on;
+    gzip_min_length              1000;
+    gzip_proxied                  any;
+    gzip_types application/x-javascript text/css application/javascript text/javascript text/plain text/xml application/json application/vnd.ms-fontobject application/x-font-opentype application/x-font-truetype application/x-font-ttf application/xml font/eot font/opentype font/otf image/svg+xml;
+
+
+    ##
+    # Proxy Cache
+    ##
+    proxy_cache_path /var/nginx/cache levels=1:2 keys_zone=one:10m inactive=60m max_size=200m;
+    proxy_cache one;
+    proxy_cache_min_uses 3;
+    proxy_cache_revalidate on;
+    proxy_cache_key "$host$request_uri$cookie_user";
+    proxy_cache_valid any      1m;
+    proxy_cache_valid 200 302 30m;
+
+    ##
+    # Global Security
+    ##
+    # config to don't allow the browser to render the page inside an frame or iframe and avoid clickjacking http://en.wikipedia.org/wiki/Clickjacking
+    # if you need to allow [i]frames, you can use SAMEORIGIN or even set an uri with ALLOW-FROM uri
+    # https://developer.mozilla.org/en-US/docs/HTTP/X-Frame-Options
+    add_header X-Frame-Options SAMEORIGIN;
+
+    # when serving user-supplied content, include a X-Content-Type-Options: nosniff header along with the Content-Type: header,
+    # to disable content-type sniffing on some browsers.
+    # https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+    # currently suppoorted in IE > 8 http://blogs.msdn.com/b/ie/archive/2008/09/02/ie8-security-part-vi-beta-2-update.aspx
+    # http://msdn.microsoft.com/en-us/library/ie/gg622941(v=vs.85).aspx
+    # 'soon' on Firefox https://bugzilla.mozilla.org/show_bug.cgi?id=471020
+    add_header X-Content-Type-Options nosniff;
+
+    # This header enables the Cross-site scripting (XSS) filter built into most recent web browsers.
+    # It's usually enabled by default anyway, so the role of this header is to re-enable the filter for
+    # this particular website if it was disabled by the user.
+    # https://www.owasp.org/index.php/List_of_useful_HTTP_headers
+    add_header X-XSS-Protection "1; mode=block";
+
+    ##
+    # Virtual Host Configs for multiple size
+    ##
+    server_names_hash_bucket_size 64;
+    include /etc/nginx/sites-enabled/*;
+}
+```
+
+3. Save and test nginx config then restart nginx service
+
+```nginx -t
+systemctl restart nginx.service
+```
+
+4. Go to sites-available and create the following file to build a block hosting
+
+```
+cd sites-available/
+vi domainname.conf
+```
+
+4.1 Config file as below
+```
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+    server_name <your-domain-name> www.<your-domain-name>;
+    return 301 https://printexpress.cloud$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    root /var/www/<web-folder-name>/html;
+    index index.html;
+    server_name <your-domain-name>;
+    charset utf-8;
+    error_page  404     /404.html;
+    error_page  403     /403.html;
+    error_page  405     /404.html;
+
+    location / {
+        limit_conn conn_limit_per_ip 10;
+        limit_req zone=req_limit_per_ip burst=5 nodelay;
+        try_files $uri.html $uri $uri/ =404;
+    }
+
+    # cache.appcache, your document html and data
+    location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+    access_log off;
+    add_header Pragma "no-cache";
+    add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"; # HSTS (ngx_http_headers_module required)
+    # add_header Public-Key-Pins 'pin-sha256="VoxDDZJgiz7LBx4LmQjxcuqL3y6du03E3UqsyTIzABg="; pin-sha256=""; max-age=5184000; includeSubDomains' always;
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
+    }
+
+     # Media: images, icons, video, audio, HTC, CSS, JS
+     location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|woff2|css|js)$ {
+     expires 30d;
+     access_log off;
+     add_header Cache-Control "public";
+     }
+
+     # Deny hotlinking
+     location ~ .(gif|png|jpe?g)$ {
+     valid_referers none blocked printexpress.cloud *.printexpress.cloud;
+     if ($invalid_referer) {
+        return   403;
+       }
+     }
+
+     # Deny referal spam
+     if ( $http_referer ~* (jewelry|viagra|nude|girl|nudit|casino|poker|porn|sex|teen|babes) ) {
+     return 403;
+     }
+
+     # Block bad robots
+     if ($http_user_agent ~ (agent1|Cheesebot|msnbot|Purebot|Baiduspider|Lipperhey|Mail.Ru|scrapbot) ) {
+     return 403;
+     }
+
+     # Block download agenta
+     if ($http_user_agent ~* LWP::Simple|wget|libwww-perl) {
+     return 403;
+     }
+         # Deny scripts inside writable directories
+     location ~* /(img|cache|media|logs|tmp|image|images)/.*.(php|pl|py|jsp|asp|sh|cgi)$ {
+     return 403;
+     }
+
+    # certs sent to the client in SERVER HELLO are concatenated in ssl_certificat
+    ssl_certificate /etc/ssl/<yourweb-ssl-folder>/cert.crt;
+    ssl_certificate_key /etc/ssl/<yourweb-ssl-folder>/privkey.key;
+    ssl_session_timeout 1h;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_tickets off;
+
+    # Diffie-Hellman parameter for DHE ciphersuites, recommended 4096 bits
+    ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
+
+    # modern configuration. tweak to your needs.
+    ssl_protocols TLSv1.2;
+    ssl_ecdh_curve secp384r1;
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+    ssl_prefer_server_ciphers on;
+
+    # OCSP Stapling ---
+    # fetch OCSP records from URL in ssl_certificate and cache them
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
+
+    # Google DNS to resolve domain
+    resolver 8.8.8.8 8.8.4.4 valid=360s ipv6=off;
+    resolver_timeout 5s;
+}
+```
+
 
 ### Step 5 Install and config certificate (SSL)
 
@@ -903,12 +1128,9 @@ https://www.nginx.com/blog/7-tips-for-faster-http2-performance/
 ### Step 6 Install and config certificate (SSL)
 
 
-## Drupal 8 (CMS), PHP7.0, Nginx, MariaDB 10.1 and PHP APC enabled 
+## PHP7.0, Nginx, MariaDB 10.1 and PHP APC enabled 
 (Alternative PHP Cache / Opcode Cache)
 
-<p align="center">
-    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/drupal%208%20logo.png" alt="DRUPAL"/>
-</p>
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/php7_logo.svg" alt="PHP7"/>
 </p>
