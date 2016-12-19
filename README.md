@@ -1,4 +1,4 @@
-# Setup a Perfect CentOS 7 Gide
+# Setup a Perfect CentOS 7 Guide
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -467,10 +467,14 @@ Brotli performance https://www.opencpu.org/posts/brotli-benchmarks/
 
 Installing nginx brotli module https://github.com/google/ngx_brotli
 
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/nginx_page_speed.png" alt="NGINX_PAGESPEED"/>
+</p>
+
 **ngx_pagespeed** - Speeds up your site and reduces page load time by automatically applying web performance best practices to pages and associated assets (CSS, JavaScript, images) without requiring you to modify your existing content or workflow.  
 Rewrites webpages and associated assets to reduce latency and bandwidth
  
-Installing page speed module https://github.com/pagespeed/ngx_pagespeed
+Installing page speed module https://developers.google.com/speed/pagespeed/module/build_ngx_pagespeed_from_source
 
 -------------------------------------------------------------------------------------------------------------------------
 
