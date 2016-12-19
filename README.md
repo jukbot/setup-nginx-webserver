@@ -891,14 +891,15 @@ libselinux.so.1
 
 For using http2 you need to have certificate (SSL) installed
 
-1. Go to nginx global file directory
+#1. Go to nginx global file directory
 
-```sudo su
+```
+sudo su
 cd /etc/nginx/
 vi nginx.conf
 ```
 
-2. Config the file as below 
+#2. Config the file as below 
 
 ```
 user  nginx;
@@ -1003,20 +1004,21 @@ http {
 }
 ```
 
-3. Save and test nginx config then restart nginx service
+#3. Save and test nginx config then restart nginx service
 
 ```nginx -t
 systemctl restart nginx.service
 ```
 
-4. Go to sites-available and create the following file to build a block hosting
+#4. Go to sites-available and create the following file to build a block hosting
 
 ```
 cd sites-available/
-vi domainname.conf
+vi <domainname>.conf
 ```
 
-4.1 Config file as below
+#5. Config file as below
+
 ```
 server {
     listen 80 default_server;
@@ -1117,6 +1119,18 @@ server {
 }
 ```
 
+#6. Enable config file 
+
+```
+cd /etc/nginx/sites-enabled/
+ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
+```
+
+#7. Save and test nginx config then restart nginx service
+
+```nginx -t
+systemctl restart nginx.service
+```
 
 ### Step 5 Install and config certificate (SSL)
 
