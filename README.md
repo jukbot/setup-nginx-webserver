@@ -908,11 +908,12 @@ vi nginx.conf
 ```
 user  nginx;
 worker_processes auto;
-worker_cpu_affinity auto;
 pid   /var/run/nginx.pid;
+worker_rlimit_nofile 100000;
+error_log /var/log/nginx/error.log crit;
 
 events {
-    worker_connections 1024; #up on your traffic and nw capacity
+    worker_connections 1024; 
     use epoll;
     multi_accept on;
 }
@@ -927,21 +928,25 @@ http {
     server_name_in_redirect off;
     limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
     limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=5r/s;
+    open_file_cache max=200000 inactive=20s; 
+    open_file_cache_valid 30s; 
+    open_file_cache_min_uses 2;
+    open_file_cache_errors on;
 
     ##
     # Buffer Limit Settings
     ##
     client_body_buffer_size      128k;
     client_max_body_size         10m;
-    client_body_timeout          10;
+    client_body_timeout          10s;
     client_header_buffer_size    1k;
-    client_header_timeout        10;
+    client_header_timeout        10s;
     large_client_header_buffers  2 1k;
     output_buffers               1 32k;
     postpone_output              1460;
-    keepalive_timeout            60;
+    keepalive_timeout            30s;
     keepalive_requests           100000;
-    send_timeout                 30;
+    send_timeout                 30s;
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
 
@@ -966,7 +971,6 @@ http {
     gzip_proxied                  any;
     gzip_types application/x-javascript text/css application/javascript text/javascript text/plain text/xml application/json application/vnd.ms-fontobject application/x-font-opentype application/x-font-truetype application/x-font-ttf application/xml font/eot font/opentype font/otf image/svg+xml;
 
-
     ##
     # Proxy Cache
     ##
@@ -981,23 +985,8 @@ http {
     ##
     # Global Security
     ##
-    # config to don't allow the browser to render the page inside an frame or iframe and avoid clickjacking http://en.wikipedia.org/wiki/Clickjacking
-    # if you need to allow [i]frames, you can use SAMEORIGIN or even set an uri with ALLOW-FROM uri
-    # https://developer.mozilla.org/en-US/docs/HTTP/X-Frame-Options
     add_header X-Frame-Options SAMEORIGIN;
-
-    # when serving user-supplied content, include a X-Content-Type-Options: nosniff header along with the Content-Type: header,
-    # to disable content-type sniffing on some browsers.
-    # https://www.owasp.org/index.php/List_of_useful_HTTP_headers
-    # currently suppoorted in IE > 8 http://blogs.msdn.com/b/ie/archive/2008/09/02/ie8-security-part-vi-beta-2-update.aspx
-    # http://msdn.microsoft.com/en-us/library/ie/gg622941(v=vs.85).aspx
-    # 'soon' on Firefox https://bugzilla.mozilla.org/show_bug.cgi?id=471020
     add_header X-Content-Type-Options nosniff;
-
-    # This header enables the Cross-site scripting (XSS) filter built into most recent web browsers.
-    # It's usually enabled by default anyway, so the role of this header is to re-enable the filter for
-    # this particular website if it was disabled by the user.
-    # https://www.owasp.org/index.php/List_of_useful_HTTP_headers
     add_header X-XSS-Protection "1; mode=block";
 
     ##
