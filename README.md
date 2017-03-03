@@ -1140,7 +1140,7 @@ server {
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name <your-domain-name> www.<your-domain-name>;
-    return 301 https://printexpress.cloud$request_uri;
+    return 301 https://<your-domain-name>$request_uri;
 }
 
 server {
@@ -1168,7 +1168,6 @@ server {
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"; # HSTS (ngx_http_headers_module required)
-    # add_header Public-Key-Pins 'pin-sha256="VoxDDZJgiz7LBx4LmQjxcuqL3y6du03E3UqsyTIzABg="; pin-sha256=""; max-age=5184000; includeSubDomains' always;
     add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
     }
 
@@ -1181,7 +1180,7 @@ server {
 
      # Deny hotlinking
      location ~ .(gif|png|jpe?g)$ {
-     valid_referers none blocked printexpress.cloud *.printexpress.cloud;
+     valid_referers none blocked <your-domain-name> *.<your-domain-name>;
      if ($invalid_referer) {
         return   403;
        }
@@ -1233,6 +1232,7 @@ server {
     resolver_timeout 5s;
 }
 ```
+Read more about configuration https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
 #6. Enable config file 
 
@@ -1247,6 +1247,12 @@ ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
 nginx -t
 systemctl restart nginx.service
 ```
+
+#8. Test the result
+
+https://www.ssllabs.com/
+https://observatory.mozilla.org/
+
 
 Read more about 7 Tips for Faster HTTP/2 Performance
 https://www.nginx.com/blog/7-tips-for-faster-http2-performance/
