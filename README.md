@@ -470,13 +470,16 @@ wget https://www.openssl.org/source/openssl-1.0.2-latest.tar.gz
 tar -zxf openssl-1.0.2-latest.tar.gz
 ```
 
-Note: If you want to install other version you can download it from https://www.openssl.org/source/
-
+Note: 
+- If you want to install other version you can download it from https://www.openssl.org/source/
+- We will use openssl 1.0.2 for long term support, you can also use newer version if you want from openssl website.
 4). Go to the source directory, then generate a config file by follow commands
+
 ```
-cd openssl-1.0.2j
+cd openssl-1.0.2k
 ./config
 ```
+Alphabet suffix 'k' of openssl version number is depend on release of openssl.
 
 5). Compile the source, test and then install the package (must login as root)
 ```
@@ -501,7 +504,7 @@ ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
 8). Verify the OpenSSL version 
 ```
 openssl version
-OpenSSL 1.0.2j  26 Sep 2016
+OpenSSL 1.0.2k  26 Jan 2017
 ```
 
 !! Done. Easy right let continue the next package ? !!
