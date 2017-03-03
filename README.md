@@ -640,7 +640,7 @@ sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-de
 
 Prior to compiling NGINX from the sources, it is necessary to install its dependencies:
 
-2.1 Install PCRE library
+2.1 Install PCRE library (January 11, 2017)
 The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
 ```
 wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz
@@ -651,7 +651,7 @@ make
 sudo make install
 ```
 
-2.2 Install ZLIB library
+2.2 Install ZLIB library (January 15, 2017)
 The zlib library required by NGINX Gzip module for headers compression:
 ```
 wget http://zlib.net/zlib-1.2.11.tar.gz
@@ -662,7 +662,7 @@ make
 sudo make install
 ```
 
-2.3 Install OpenSSL library (lastest)
+2.3 Install OpenSSL library (lastest or >= 1.0.2)
 The OpenSSL library required by NGINX SSL modules to support the HTTPS protocol:
 
 Please see the OpenSSL (with ALPN support) section
@@ -672,8 +672,8 @@ Please see the OpenSSL (with ALPN support) section
 
 ```
 wget http://nginx.org/download/nginx-1.10.3.tar.gz
-tar zxf nginx-1.10.x.tar.gz
-cd nginx-1.10.x
+tar zxf nginx-1.10.3.tar.gz
+cd nginx-1.10.3
 ```
 
 Other version please see https://nginx.org/en/download.html
