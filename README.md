@@ -679,6 +679,15 @@ cd nginx-1.10.3
 Other version please see https://nginx.org/en/download.html
 
 3.1 Config the nginx for built
+
+```
+NOTE!! Please change the library version to your current library path version. For example
+
+--with-pcre=/usr/local/src/pcre-8.xx \
+--with-zlib=/usr/local/src/zlib-1.2.x \
+--with-openssl=/usr/local/src/openssl-1.x.x \
+```
+
 ```
 ./configure \
 --prefix=/etc/nginx \
@@ -696,9 +705,9 @@ Other version please see https://nginx.org/en/download.html
 --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
 --user=nginx \
 --group=nginx \
---with-pcre=/usr/local/src/pcre-8.39 \
---with-zlib=/usr/local/src/zlib-1.2.8 \
---with-openssl=/usr/local/src/openssl-1.0.2j \
+--with-pcre=/usr/local/src/pcre-8.40 \
+--with-zlib=/usr/local/src/zlib-1.2.11 \
+--with-openssl=/usr/local/src/openssl-1.0.2k \
 --with-http_ssl_module \
 --with-http_stub_status_module \
 --with-http_gunzip_module \
