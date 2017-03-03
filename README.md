@@ -1121,7 +1121,8 @@ http {
 
 #3. Save and test nginx config then restart nginx service
 
-```nginx -t
+```
+nginx -t
 systemctl restart nginx.service
 ```
 
