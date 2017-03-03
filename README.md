@@ -1235,13 +1235,16 @@ server {
 ```
 
 #6. Enable config file 
+
 ```
 cd /etc/nginx/sites-enabled/
 ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
 ```
 
 #7. Save and test nginx config then restart nginx service
-```nginx -t
+
+```
+nginx -t
 systemctl restart nginx.service
 ```
 
