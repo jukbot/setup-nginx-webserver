@@ -1244,42 +1244,10 @@ ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
 ```nginx -t
 systemctl restart nginx.service
 ```
+
 Read more about 7 Tips for Faster HTTP/2 Performance
 https://www.nginx.com/blog/7-tips-for-faster-http2-performance/
 
-
-## PHP7.0, Nginx, MariaDB 10.1 and PHP APC enabled 
-(Alternative PHP Cache / Opcode Cache)
-
-<p align="center">
-    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/php7_logo.svg" alt="PHP7"/>
-</p>
-
-First add repository into CentOS 7
-```
-## Remi Dependency on CentOS 7 and Red Hat (RHEL) 7 ##
-rpm -Uvh http://dl.fedoraproject.org/pub/epel/7/x86_64/e/epel-release-7-8.noarch.rpm
-
-## CentOS 7 and Red Hat (RHEL) 7 ##
-rpm -Uvh http://rpms.famillecollet.com/enterprise/remi-release-7.rpm
-```
-
-Then install required packages
-```
-yum --enablerepo=remi-php70 install php-fpm php-common php-mysqlnd php-cli php-mbstring php-xml php-gd php-json php-curl php-pdo php-opcache php-opcache php-pecl-apcu php-pear
-```
-
-Start php-fpm (FastCGI Process Manager)
-```
-/etc/init.d/php-fpm start ## use restart after update
-## OR ##
-service php-fpm start ## use restart after update
-```
-
-Auto start php-fpm on boot
-```
-systemctl enable php-fpm.service
-```
 
 ## Set Up FirewallD
 
