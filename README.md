@@ -1105,13 +1105,6 @@ http {
     proxy_cache_valid 200 302 30m;
 
     ##
-    # Global Security
-    ##
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-
-    ##
     # Virtual Host Configs for multiple size
     ##
     server_names_hash_bucket_size 64;
@@ -1167,6 +1160,7 @@ server {
     add_header X-XSS-Protection "1; mode=block" always;
     add_header X-Content-Type-Options "nosniff" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "no-referrer";
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"; # HSTS (ngx_http_headers_module required)
     add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
     }
