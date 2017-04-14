@@ -671,9 +671,9 @@ Please see the OpenSSL (with ALPN support) section
 ### Step 3 Download NGINX source code
 
 ```
-wget http://nginx.org/download/nginx-1.10.3.tar.gz
-tar zxf nginx-1.10.3.tar.gz
-cd nginx-1.10.3
+wget http://nginx.org/download/nginx-1.12.0.tar.gz
+tar zxf nginx-1.12.0.tar.gz
+cd nginx-1.12.0
 ```
 
 Other version please see https://nginx.org/en/download.html
