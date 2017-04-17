@@ -787,7 +787,7 @@ Next, set openssl (required library) path to /usr/local/src/openssl-1.0.2k that 
 Next, add ssl http module for enables used SSL/TLS (https) in nginx. (VERY recommeded I love HTTPS !!)
 Next, add http_v2 module for enables used http2 in nginx. (Required http_ssl_module !!!)
 Next, add http_realip_module to change the client address to the one sent in the specified header field.
-Next, add threads, file-aio and ipv6 for enables NGINX to use thread pools, asynchronous I/O and IPv6 support.
+Next, add threads, file-aio for enables NGINX to use thread pools, asynchronous I/O.
 Next, add addition_module for adds text before and after a response.
 Next, add sub_module to modifies a response by replacing one specified string by another.
 Next, add dav_module to intend for file management automation via the WebDAV protocol.
@@ -807,6 +807,8 @@ Next, add mail_ssl_module to provide support for a mail proxy server to work wit
 Next, add stream module to enable the TCP proxy functionality. (OPTIONAL)
 Next, add stream_ssl_module to provide support for a stream proxy server to work with the SSL/TLS protocol. (OPTIONAL)
 (Requires an SSL library such as OpenSSL.)
+
+NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with nginx 1.11.5 (11 Oct 2016) now this configure option was removed and IPv6 support is configured by default automatically. 
 
 ```
 ./configure \
@@ -833,7 +835,6 @@ Next, add stream_ssl_module to provide support for a stream proxy server to work
 --with-http_realip_module \
 --with-threads \
 --with-file-aio \
---with-ipv6 \
 --with-http_addition_module \
 --with-http_sub_module \
 --with-http_dav_module \
