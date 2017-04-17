@@ -762,10 +762,10 @@ NOTE!! Please change the library version to your current library path version. F
 --with-openssl=/usr/local/src/openssl-1.x.x \
 ```
 
-Configure detail
-=======================
+#### NGINX Compile configure detail
 
-TLDR; 
+**TLDR;**
+
 First, we'll set prefix to /etc/nginx for our nginx installation path. 
 Next, set sbin path to /usr/sbin/nginx for storing our nginx process.
 Next, set modules path to /usr/lib64/nginx/modules for storing our ngnx modules.
@@ -809,6 +809,7 @@ Next, add stream_ssl_module to provide support for a stream proxy server to work
 (Requires an SSL library such as OpenSSL.)
 
 NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with nginx 1.11.5 (11 Oct 2016) now this configure option was removed and IPv6 support is configured by default automatically. 
+
 
 ```
 ./configure \
