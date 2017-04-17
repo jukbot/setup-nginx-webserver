@@ -850,7 +850,7 @@ Next, add stream_ssl_module to provide support for a stream proxy server to work
 --with-mail \
 --with-mail_ssl_module \
 --with-stream \
---with-stream_ssl_module \
+--with-stream_ssl_module 
 ```
 
 3.2 Compile and install the build:
