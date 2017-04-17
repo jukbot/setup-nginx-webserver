@@ -472,24 +472,29 @@ tar -zxf openssl-1.0.2-latest.tar.gz
 
 Note: 
 - If you want to install other version you can download it from https://www.openssl.org/source/
-- We will use openssl 1.0.2 for long term support, you can also use newer version if you want from openssl website.
+- We will use openssl version 1.0.2 for long term support, you can use newer version if you want from official website.
+
+
 4). Go to the source directory, then generate a config file by follow commands
 
 ```
 cd openssl-1.0.2k
 ./config
 ```
-Alphabet suffix 'k' of openssl version number is depend on release of openssl.
 
-5). Compile the source, test and then install the package (must login as root)
+Alphabet suffix 'k' of openssl version number is depended on release of openssl.
+
+5). Compile the source, test and then install the package (need root permission)
+
 ```
 make
 make test
 make install
 ```
 
-Note: This will take a while upon CPU capacity. If your CPU have more than 1 core you can add suffix -j4 for using 4 cores to compile.
-For example: make -j4 to use 4 cores to compile the source code.
+Note: This will take a while upon CPU capacity. If your CPU have more than 1 core you can added suffix -j4 for using 4 cores to compile the source code.
+
+For example: make -j4 to use all 4 cores to compile the source code.
 
 6). Move old openssl installed version to the root folder for backup or you can delete it
 ```
