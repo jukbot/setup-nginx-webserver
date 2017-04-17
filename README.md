@@ -1,4 +1,4 @@
-# Setup a Perfect CentOS 7 Guide (Updated March 2, 2017)
+# Setup a Perfect CentOS 7 Guide (Updated April 17, 2017)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
