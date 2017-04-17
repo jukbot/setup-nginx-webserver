@@ -762,49 +762,89 @@ NOTE!! Please change the library version to your current library path version. F
 --with-openssl=/usr/local/src/openssl-1.x.x \
 ```
 
-#### NGINX Compile configure detail
-
-**TLDR;**
+#### NGINX Compile configure detail (TL;DR)
 
 First, we'll set prefix to /etc/nginx for our nginx installation path. 
+
 Next, set sbin path to /usr/sbin/nginx for storing our nginx process.
+
 Next, set modules path to /usr/lib64/nginx/modules for storing our ngnx modules.
+
 Next, set conf path to /etc/nginx/nginx.conf for storing our default global nginx config file.
+
 Next, set error log path to /var/log/nginx/error.log for storing our error log file location.
+
 Next, set http log path to /var/log/nginx/access.log for storing our http log file location.
+
 Next, set pid path to /var/run/nginx.pid to set the name for main process ID file.
+
 Next, set lock path to /var/run/nginx.lock to set the name for Nginx lock file.
+
 Next, set http-client-body-temp path to /var/cache/nginx/client_temp for storing client temporary cache.
+
 Next, set http-proxy-temp path to /var/cache/nginx/proxy_temp for storing temporary proxy.
+
 Next, set http-fastcgi-temp path to /var/cache/nginx/fastcgi_temp for storing fastcgi cache. (commonly used in PHP)
+
 Next, set http-uwsgi-temp path to /var/cache/nginx/uwsgi_temp for storing uwsgi cache.
+
 Next, set http-scgi-temp path to /var/cache/nginx/scgi_temp for storing scgi cache.
+
 Next, set user as nginx.
+
 Next, set group as nginx.
+
 Next, set pcre (required library) path to /usr/local/src/pcre-8.40 that where you downloaded source to.
+
 Next, set zlib (required library) path to /usr/local/src/zlib-1.2.11 that where you downloaded source to.
+
 Next, set openssl (required library) path to /usr/local/src/openssl-1.0.2k that where you downloaded source to.
+
 Next, add ssl http module for enables used SSL/TLS (https) in nginx. (VERY recommeded I love HTTPS !!)
+
 Next, add http_v2 module for enables used http2 in nginx. (Required http_ssl_module !!!)
+
 Next, add http_realip_module to change the client address to the one sent in the specified header field.
 Next, add threads, file-aio for enables NGINX to use thread pools, asynchronous I/O.
+
 Next, add addition_module for adds text before and after a response.
+
 Next, add sub_module to modifies a response by replacing one specified string by another.
+
 Next, add dav_module to intend for file management automation via the WebDAV protocol.
+
 Next, add flv_module to provide pseudo-streaming server-side support for Flash Video (FLV) files.
+
 Next, add mp4_module to provide pseudo-streaming server-side support for MP4 files.
-Next, add gunzip_module for decompresses responses with Content-Encoding: gzip for clients that do not support zip encoding method.
-Next, add gzip_static_module for allows sending precompressed files with the *.gz filename extension instead of regular files.
+
+Next, add gunzip_module for decompresses responses with Content-Encoding: gzip for clients that do not support zip encoding 
+method.
+
+Next, add gzip_static_module for allows sending precompressed files with the *.gz filename extension instead of regular 
+files.
+
 Next, add auth_request_module to implement client authorization based on the result of a subrequest.
-Next, add random_index_module for processes requests ending with the slash character (‘/’) and picks a random file in a directory to serve as an index file.
-Next, add secure_link_module for used to check authenticity of requested links, protect resources from unauthorized access, and limit link lifetime.
-Next, add slice_module for allows splitting a request into subrequests, each subrequest returns a certain range of response. Provides more effective caching of large files.
+
+Next, add random_index_module for processes requests ending with the slash character (‘/’) and picks a random file in a 
+directory to serve as an index file.
+
+Next, add secure_link_module for used to check authenticity of requested links, protect resources from unauthorized access, 
+and limit link lifetime.
+
+Next, add slice_module for allows splitting a request into subrequests, each subrequest returns a certain range of 
+response. Provides more effective caching of large files.
+
 Next, add degradation_module for allows returning an error when a memory size exceeds the defined value.
+
 Next, add stub_status_module to provides access to basic status information.
+
 Next, add mail module to enable mail proxy functionality. (OPTIONAL)
+
 Next, add mail_ssl_module to provide support for a mail proxy server to work with the SSL/TLS protocol. (OPTIONAL) 
 (Requires an SSL library such as OpenSSL.)
+
 Next, add stream module to enable the TCP proxy functionality. (OPTIONAL)
+
 Next, add stream_ssl_module to provide support for a stream proxy server to work with the SSL/TLS protocol. (OPTIONAL)
 (Requires an SSL library such as OpenSSL.)
 
