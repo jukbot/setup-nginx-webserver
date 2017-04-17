@@ -449,7 +449,7 @@ According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 To compile openssl from source you need to install compiler and required libraries to build nginx.
 ```
 sudo yum groupinstall 'Development Tools'
-sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
+sudo yum -y install gcc gcc-c++ make autoconf automake zlib-devel pcre-devel openssl-devel zlib-devel pam-devel
 ```
 
 1). Verify the current openssl version by command
@@ -523,7 +523,12 @@ OpenSSL 1.0.2k  26 Jan 2017
 
 Compiling NGINX from the sources provides you with more flexibility: you can add particular NGINX modules or 3rd party modules and apply latest security patches. 
 
-For example of core NGINX Modules: 
+#### NGINX Default Modules (No need to config this, it will install as default)
+
+**NGINX consists of modules.**  The set of modules as well as other build options are configured with the ./configure script.
+
+The following list are modules built by Default. So you're not need to configure it out.
+However, you can disable it by including it to the configure script with the --without- prefix.
 
 **http_charset_module**	Adds the specified charset to the “Content-Type” response header field, can convert data from one charset to another.
 
@@ -578,7 +583,71 @@ For example of core NGINX Modules:
 **http_upstream_zone_module**	Enables the shared memory zone.
 
 
-For example of 3rd Party modules: 
+#### NGINX Modules Not Built by Default (Select the module what you're using or plan to)
+
+Some NGINX modules are not built by default. You will need to enable them manually by adding to the ./configure command. The mail, stream, geoip, image_filter, perl and xslt modules can be compiled as dynamic. See Dynamic Modules for details.
+
+**--with-threads** Enables NGINX to use thread pools.
+See Thread Pools in NGINX Boost Performance 9x! blog post for details.
+
+**--with-file-aio** Enables asynchronous I/O. (Suggest if you're working with I/O)
+
+**--with-ipv6** Enables IPv6 support. (Very Recommended !!)
+
+**--with-http_ssl_module** Provides support for HTTPS. Requires an SSL library such as OpenSSL. (Very Recommended !!)
+
+**--with-http_v2_module** Provides support for HTTP/2. (Very Recommended !!)
+
+**--with-http_realip_module** Changes the client address to the one sent in the specified header field.
+
+**--with-http_addition_module** Adds text before and after a response.
+
+**--with-http_xslt_module or --with-http_xslt_module=dynamic**  Transforms XML responses using one or more XSLT stylesheets. The module requires the Libxml2 and XSLT libraries. The module can also be compiled as dynamic.
+
+**--with-http_image_filter_module or --with-http_image_filter_module=dynamic**  Transforms images in JPEG, GIF, and PNG formats. The module requires the LibGD library. The module can also be compiled as dynamic.
+
+**--with-http_geoip_module or --with-http_geoip_module=dynamic**  Allows creating variables whose values depend on the client IP address. The module uses MaxMind GeoIP databases. The module can also be compiled as dynamic.
+
+**--with-http_sub_module** Modifies a response by replacing one specified string by another.
+
+**--with-http_dav_module** Intended for file management automation via the WebDAV protocol.
+
+**--with-http_flv_module** . Provides pseudo-streaming server-side support for Flash Video (FLV) files.
+
+**--with-mp4_module** Provides pseudo-streaming server-side support for MP4 files.
+
+**--with-http_gunzip_module** Decompresses responses with Content-Encoding: gzip for clients that do not support zip encoding method.
+
+**--with-http_gzip_static_module** Allows sending precompressed files with the *.gz filename extension instead of regular files.
+
+**--with-http_auth_request_module** Implements client authorization based on the result of a subrequest.
+
+**--with-http_random_index_module** Processes requests ending with the slash character (‘/’) and picks a random file in a directory to serve as an index file.
+
+**--with-http_secure_link_module** Used to check authenticity of requested links, protect resources from unauthorized access, and limit link lifetime.
+
+**--with-http_slice_module** Allows splitting a request into subrequests, each subrequest returns a certain range of response. Provides more effective caching of large files.
+
+**--with-http_degradation_module** Allows returning an error when a memory size exceeds the defined value.
+
+**--with-http_stub_status_module** Provides access to basic status information.
+
+**--with-http_perl_module or --with-http_perl_module=dynamic** . Used to implement location and variable handlers in Perl and insert Perl calls into SSI. Requires the PERL library. The module can also be compiled as dynamic.
+
+**--with-mail or --with-mail=dynamic** Enables mail proxy functionality. See the ngx_mail_core_module reference for the list of directives. The module can also be compiled as dynamic.
+
+**--with-mail_ssl_module** Provides support for a mail proxy server to work with the SSL/TLS protocol. Requires an SSL library such as OpenSSL.
+
+**--with-stream or --with-stream=dynamic** Enables the TCP proxy functionality. The module can also be compiled as dynamic.
+
+**--with-stream_ssl_module** Provides support for a stream proxy server to work with the SSL/TLS protocol. Requires an SSL library such as OpenSSL.
+
+**--with-google_perftools_module** Allows using Google Performance tools library.
+
+**--with-cpp_test_module --with-debug** Enables the debugging log.
+
+
+#### NGINX 3rd Party Modules (Optional if you think your configure is too mainstream, want to tweak more)
 
 **ngx_brotli module** - An open source data compression library introducing by Google, based on a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling. (By default nginx bundle with **gzip** compression library)
  
@@ -693,6 +762,52 @@ NOTE!! Please change the library version to your current library path version. F
 --with-openssl=/usr/local/src/openssl-1.x.x \
 ```
 
+Configure detail
+=======================
+
+TLDR; 
+First, we'll set prefix to /etc/nginx for our nginx installation path. 
+Next, set sbin path to /usr/sbin/nginx for storing our nginx process.
+Next, set modules path to /usr/lib64/nginx/modules for storing our ngnx modules.
+Next, set conf path to /etc/nginx/nginx.conf for storing our default global nginx config file.
+Next, set error log path to /var/log/nginx/error.log for storing our error log file location.
+Next, set http log path to /var/log/nginx/access.log for storing our http log file location.
+Next, set pid path to /var/run/nginx.pid to set the name for main process ID file.
+Next, set lock path to /var/run/nginx.lock to set the name for Nginx lock file.
+Next, set http-client-body-temp path to /var/cache/nginx/client_temp for storing client temporary cache.
+Next, set http-proxy-temp path to /var/cache/nginx/proxy_temp for storing temporary proxy.
+Next, set http-fastcgi-temp path to /var/cache/nginx/fastcgi_temp for storing fastcgi cache. (commonly used in PHP)
+Next, set http-uwsgi-temp path to /var/cache/nginx/uwsgi_temp for storing uwsgi cache.
+Next, set http-scgi-temp path to /var/cache/nginx/scgi_temp for storing scgi cache.
+Next, set user as nginx.
+Next, set group as nginx.
+Next, set pcre (required library) path to /usr/local/src/pcre-8.40 that where you downloaded source to.
+Next, set zlib (required library) path to /usr/local/src/zlib-1.2.11 that where you downloaded source to.
+Next, set openssl (required library) path to /usr/local/src/openssl-1.0.2k that where you downloaded source to.
+Next, add ssl http module for enables used SSL/TLS (https) in nginx. (VERY recommeded I love HTTPS !!)
+Next, add http_v2 module for enables used http2 in nginx. (Required http_ssl_module !!!)
+Next, add http_realip_module to change the client address to the one sent in the specified header field.
+Next, add threads, file-aio and ipv6 for enables NGINX to use thread pools, asynchronous I/O and IPv6 support.
+Next, add addition_module for adds text before and after a response.
+Next, add sub_module to modifies a response by replacing one specified string by another.
+Next, add dav_module to intend for file management automation via the WebDAV protocol.
+Next, add flv_module to provide pseudo-streaming server-side support for Flash Video (FLV) files.
+Next, add mp4_module to provide pseudo-streaming server-side support for MP4 files.
+Next, add gunzip_module for decompresses responses with Content-Encoding: gzip for clients that do not support zip encoding method.
+Next, add gzip_static_module for allows sending precompressed files with the *.gz filename extension instead of regular files.
+Next, add auth_request_module to implement client authorization based on the result of a subrequest.
+Next, add random_index_module for processes requests ending with the slash character (‘/’) and picks a random file in a directory to serve as an index file.
+Next, add secure_link_module for used to check authenticity of requested links, protect resources from unauthorized access, and limit link lifetime.
+Next, add slice_module for allows splitting a request into subrequests, each subrequest returns a certain range of response. Provides more effective caching of large files.
+Next, add degradation_module for allows returning an error when a memory size exceeds the defined value.
+Next, add stub_status_module to provides access to basic status information.
+Next, add mail module to enable mail proxy functionality. (OPTIONAL)
+Next, add mail_ssl_module to provide support for a mail proxy server to work with the SSL/TLS protocol. (OPTIONAL) 
+(Requires an SSL library such as OpenSSL.)
+Next, add stream module to enable the TCP proxy functionality. (OPTIONAL)
+Next, add stream_ssl_module to provide support for a stream proxy server to work with the SSL/TLS protocol. (OPTIONAL)
+(Requires an SSL library such as OpenSSL.)
+
 ```
 ./configure \
 --prefix=/etc/nginx \
@@ -714,28 +829,28 @@ NOTE!! Please change the library version to your current library path version. F
 --with-zlib=/usr/local/src/zlib-1.2.11 \
 --with-openssl=/usr/local/src/openssl-1.0.2k \
 --with-http_ssl_module \
---with-http_stub_status_module \
---with-http_gunzip_module \
---with-http_gzip_static_module \
---with-file-aio \
+--with-http_v2_module \
+--with-http_realip_module \
 --with-threads \
+--with-file-aio \
 --with-ipv6 \
 --with-http_addition_module \
---with-http_auth_request_module \
+--with-http_sub_module \
 --with-http_dav_module \
 --with-http_flv_module \
 --with-http_mp4_module \
+--with-http_gunzip_module \
+--with-http_gzip_static_module \
+--with-http_auth_request_module \
 --with-http_random_index_module \
---with-http_realip_module \
 --with-http_secure_link_module \
 --with-http_slice_module \
---with-http_sub_module \
---with-http_v2_module \
- --with-mail \
+--with-http_degradation_module \
+--with-http_stub_status_module \
+--with-mail \
 --with-mail_ssl_module \
 --with-stream \
 --with-stream_ssl_module \
---with-cc-opt='-O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector-strong --param=ssp-buffer-size=4 -grecord-gcc-switches -m64 -mtune=generic'
 ```
 
 3.2 Compile and install the build:
