@@ -685,14 +685,14 @@ NGINX Open Source is available in 2 versions:
 
 ### Prerequisites
 
-**!! Before we getting start you need to verify that you have installed opnssl with ALPN feature support**
+**!! Before we getting start you need to verify that you have already installed openssl with ALPN support**
 ```
 openssl version
 ```
 The openssl version must be 1.0.2 or higher.
 
 
-### Step 1 Installing compiler and libraries (If you already installed skip this step)
+### Step 1 Install compiler and libraries (If you already installed skip this step)
 
 To compile nginx from source you need to install compiler and required libraries to build nginx.
 
