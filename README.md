@@ -1,4 +1,5 @@
-# Setup a Perfect Web Server CentOS 7 Guide (Updated April 17, 2017)
+# Setup a Perfect Web Server CentOS 7 Guide 
+(Updated April 17, 2017)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
