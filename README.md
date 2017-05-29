@@ -10,7 +10,7 @@ Because most of these linux branches have a long term support, f_cking stable an
 However, most libraries and applications that preinstalled are obsolete. 
 So this article will guide you to build a perfect web server with modern applications (HTTP/2 support).
 
-Please read: This article **compatible with RedHat Enterprise Linux 7**, except some repository links need to change upon vendors and processor architecture of your hardware.
+Please read: This article **compatible with RedHat Enterprise Linux 7.x**, except some repository links need to change upon vendors and processor architecture of your hardware.
 
 ## Introduction
 
