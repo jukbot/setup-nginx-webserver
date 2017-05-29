@@ -7,7 +7,7 @@
 
 I've gather informations and created this article for sysadmin who're using CentOS or Enterprise Linux.
 Because most of these linux branches have a long term support, f_cking stable and secured (SELinux). 
-However, most libraries and applications are obsolete. 
+However, most libraries and applications that preinstalled are obsolete. 
 So this article will guide you to build a perfect web server with modern applications (HTTP/2 support).
 
 Please read: This article **compatible with RedHat Enterprise Linux 7**, except some repository links need to change upon vendors and processor architecture of your hardware.
