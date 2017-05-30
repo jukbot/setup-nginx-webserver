@@ -753,6 +753,7 @@ Please see the OpenSSL (with ALPN support) section
 ### Step 3 Download NGINX source code
 
 ```
+cd /usr/local/src
 wget http://nginx.org/download/nginx-1.12.0.tar.gz
 tar zxf nginx-1.12.0.tar.gz
 cd nginx-1.12.0
