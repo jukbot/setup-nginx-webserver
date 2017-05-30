@@ -471,7 +471,7 @@ yum info openssl
 
 3). Download the latest version of OpenSSL, do as follows:
 ```
-cd /usr/src
+cd /usr/local/src/
 wget https://www.openssl.org/source/openssl-1.0.2-latest.tar.gz
 tar -zxf openssl-1.0.2-latest.tar.gz
 ```
@@ -723,6 +723,7 @@ Prior to compiling NGINX from the sources, it is necessary to install its depend
 2.1 Install PCRE library (January 11, 2017)
 The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
 ```
+cd /usr/local/src
 wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz
 tar -zxf pcre-8.40.tar.gz
 cd pcre-8.40
@@ -734,6 +735,7 @@ sudo make install
 2.2 Install ZLIB library (January 15, 2017)
 The zlib library required by NGINX Gzip module for headers compression:
 ```
+cd /usr/local/src
 wget http://zlib.net/zlib-1.2.11.tar.gz
 tar -zxf zlib-1.2.11.tar.gz
 cd zlib-1.2.11
