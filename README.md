@@ -1140,7 +1140,7 @@ configure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-p
 
 3.14 Start nginx 
 ```
-sudo nginx
+sudo systemctl start nginx
 ```
 
 If you see this error
