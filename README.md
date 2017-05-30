@@ -484,11 +484,11 @@ Note:
 4). Go to the source directory, then generate a config file by follow commands
 
 ```
-cd openssl-1.0.2k
+cd openssl-1.0.2l
 ./config
 ```
 
-Alphabet suffix 'k' of openssl version number is depended on release of openssl.
+Alphabet suffix 'l' of openssl version number is depended on release of openssl.
 
 5). Compile the source, test and then install the package (need root permission)
 
@@ -515,7 +515,7 @@ ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
 8). Verify the OpenSSL version 
 ```
 openssl version
-OpenSSL 1.0.2k  26 Jan 2017
+OpenSSL 1.0.2l  25 May 2017
 ```
 
 !! Done. Easy right let continue the next package ? !!
