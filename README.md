@@ -951,20 +951,23 @@ kill -9 PID-Of-Nginx
  
 ```
 [Unit]
-Description=The NGINX HTTP and reverse proxy server
+Description=The nginx HTTP and reverse proxy server
 After=syslog.target network.target remote-fs.target nss-lookup.target
- 
+
 [Service]
 Type=forking
-PIDFile=/var/run/nginx.pid
-ExecStartPre=/usr/sbin/nginx -t -c /etc/nginx/nginx.conf
+PIDFile=/run/nginx.pid
+ExecStartPre=/usr/sbin/nginx -t -c  /etc/nginx/nginx.conf
 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
 ExecReload=/bin/kill -s HUP $MAINPID
-ExecStop=/bin/kill -s QUIT $MAINPID
+# Sleep for 1 second to give PassengerAgent a chance to clean up.
+# Use TERM instead of QUIT to prevent Nginx from leaving stale Unix socket and failing the next start (https://trac.nginx.org/nginx/ticket/753)
+ExecStop=/bin/kill -s TERM $MAINPID ; /bin/sleep 1
 PrivateTmp=true
- 
+
 [Install]
 WantedBy=multi-user.target
+~                             
  ```
  
 3.9 then reload the system files
