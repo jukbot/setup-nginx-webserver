@@ -1,5 +1,5 @@
 # Setup a Perfect Web Server CentOS 7 Guide 
-(Updated April 17, 2017)
+(Updated May 31, 2017)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -804,7 +804,7 @@ Next, set pcre (required library) path to /usr/local/src/pcre-8.40 that where yo
 
 Next, set zlib (required library) path to /usr/local/src/zlib-1.2.11 that where you downloaded source to.
 
-Next, set openssl (required library) path to /usr/local/src/openssl-1.0.2k that where you downloaded source to.
+Next, set openssl (required library) path to /usr/local/src/openssl-1.0.2l that where you downloaded source to.
 
 Next, add ssl http module for enables used SSL/TLS (https) in nginx. (VERY recommeded I love HTTPS !!)
 
@@ -876,7 +876,7 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 --group=nginx \
 --with-pcre=/usr/local/src/pcre-8.40 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.0.2k \
+--with-openssl=/usr/local/src/openssl-1.0.2l \
 --with-http_ssl_module \
 --with-http_v2_module \
 --with-http_realip_module \
