@@ -455,7 +455,7 @@ According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 To compile openssl from source you need to install compiler and required libraries to build nginx.
 ```
 sudo yum groupinstall 'Development Tools'
-sudo yum -y install gcc gcc-c++ make autoconf automake zlib-devel pcre-devel openssl-devel zlib-devel pam-devel
+sudo yum -y install gcc gcc-c++ make unzip autoconf automake zlib-devel pcre-devel openssl-devel zlib-devel pam-devel
 ```
 
 1). Verify the current openssl version by command
