@@ -905,7 +905,7 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 --with-stream \
 --with-stream_ssl_module \
 --with-stream_realip_module \
- --add-module=/usr/local/src/ngx_brotli 
+--add-module=/usr/local/src/ngx_brotli 
 ```
 
 3.2 Compile and install the build:
