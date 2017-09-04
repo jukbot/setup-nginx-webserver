@@ -877,6 +877,8 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
 --user=nginx \
 --group=nginx \
+--with-pcre-jit \
+--with-ld-opt="-lrt" \
 --with-pcre=/usr/local/src/pcre-8.41 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
 --with-openssl=/usr/local/src/openssl-1.1.of \
@@ -901,7 +903,9 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 --with-mail \
 --with-mail_ssl_module \
 --with-stream \
---with-stream_ssl_module 
+--with-stream_ssl_module \
+--with-stream_realip_module \
+ --add-module=/usr/local/src/ngx_brotli 
 ```
 
 3.2 Compile and install the build:
@@ -1262,16 +1266,26 @@ http {
     ##
     # Gzip Settings
     ##
-    gzip on;
-    gzip_buffers                16 8k;
-    gzip_comp_level                 6;
-    gzip_disable              "msie6";
-    gzip_http_version             1.1;
-    gzip_vary                      on;
-    gzip_min_length              1000;
-    gzip_proxied                  any;
-    gzip_types application/x-javascript text/css application/javascript text/javascript text/plain text/xml application/json application/vnd.ms-fontobject application/x-font-opentype application/x-font-truetype application/x-font-ttf application/xml font/eot font/opentype font/otf image/svg+xml;
+    #gzip on;
+    #gzip_buffers                32 8k;
+    #gzip_comp_level                 6;
+    #gzip_disable              "msie6";
+    #gzip_http_version             1.1;
+    #gzip_vary                      on;
+    #gzip_min_length              1000;
+    #gzip_proxied                  any;
+    #gzip_types text/plain text/css text/javascript text/xml application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
 
+    ##
+    # Brotli Settings
+    ##
+    brotli on;
+    brotli_static on;
+    brotli_min_length 1000;
+    brotli_buffers 32 8k;
+    brotli_comp_level 6;
+    brotli_types text/plain text/css text/javascript text/xml application/javascript application/x-javascript  application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
+    
     ##
     # Proxy Cache
     ##
