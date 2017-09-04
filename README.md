@@ -887,7 +887,7 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 --with-ld-opt="-lrt" \
 --with-pcre=/usr/local/src/pcre-8.41 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.1.of \
+--with-openssl=/usr/local/src/openssl-1.1.0f \
 --with-http_ssl_module \
 --with-http_v2_module \
 --with-http_realip_module \
