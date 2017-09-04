@@ -661,6 +661,12 @@ Brotli performance https://www.opencpu.org/posts/brotli-benchmarks/
 
 Installing nginx brotli module https://github.com/google/ngx_brotli
 
+```
+git clone https://github.com/google/ngx_brotli.git
+cd /usr/local/src/ngx_brotli 
+git submodule update --init
+```
+
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/nginx_page_speed.png" alt="NGINX_PAGESPEED"/>
 </p>
