@@ -1,5 +1,5 @@
 # Setup a Perfect Nginx Web Server CentOS 7 Guide 
-(Updated May 31, 2017)
+(Updated Sep 4, 2017)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -472,19 +472,19 @@ yum info openssl
 3). Download the latest version of OpenSSL, do as follows:
 ```
 cd /usr/local/src/
-wget https://www.openssl.org/source/openssl-1.0.2-latest.tar.gz
-tar -zxf openssl-1.0.2-latest.tar.gz
+wget https://www.openssl.org/source/openssl-1.1.0-latest.tar.gz
+tar -zxf openssl-1.1.0f.tar.gz
 ```
 
 Note: 
 - If you want to install other version you can download it from https://www.openssl.org/source/
-- We will use openssl version 1.0.2 for long term support, you can use newer version if you want from official website.
+- We will use lastest openssl version 1.1.x from official website.
 
 
 4). Go to the source directory, then generate a config file by follow commands
 
 ```
-cd openssl-1.0.2l
+cd openssl-1.1.0f
 ./config
 ```
 
@@ -724,9 +724,9 @@ Prior to compiling NGINX from the sources, it is necessary to install its depend
 The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
 ```
 cd /usr/local/src
-wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.40.tar.gz
-tar -zxf pcre-8.40.tar.gz
-cd pcre-8.40
+wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.41.tar.gz
+tar -zxf pcre-8.41.tar.gz
+cd pcre-8.41
 ./configure
 make
 sudo make install
@@ -754,9 +754,9 @@ Please see the OpenSSL (with ALPN support) section
 
 ```
 cd /usr/local/src
-wget http://nginx.org/download/nginx-1.12.0.tar.gz
-tar zxf nginx-1.12.0.tar.gz
-cd nginx-1.12.0
+wget http://nginx.org/download/nginx-1.12.1.tar.gz
+tar zxf nginx-1.12.1.tar.gz
+cd nginx-1.12.1
 ```
 
 Other version please see https://nginx.org/en/download.html
@@ -766,9 +766,9 @@ Other version please see https://nginx.org/en/download.html
 ```
 NOTE!! Please change the library version to your current library path version. For example
 
---with-pcre=/usr/local/src/pcre-8.xx \
---with-zlib=/usr/local/src/zlib-1.2.x \
---with-openssl=/usr/local/src/openssl-1.x.x \
+--with-pcre=/usr/local/src/pcre-8.41 \
+--with-zlib=/usr/local/src/zlib-1.2.11 \
+--with-openssl=/usr/local/src/openssl-1.1.0f \
 ```
 
 #### NGINX Compile configure detail (TL;DR)
@@ -803,11 +803,11 @@ Next, set user as nginx.
 
 Next, set group as nginx.
 
-Next, set pcre (required library) path to /usr/local/src/pcre-8.40 that where you downloaded source to.
+Next, set pcre (required library) path to /usr/local/src/pcre-8.41 that where you downloaded source to.
 
 Next, set zlib (required library) path to /usr/local/src/zlib-1.2.11 that where you downloaded source to.
 
-Next, set openssl (required library) path to /usr/local/src/openssl-1.0.2l that where you downloaded source to.
+Next, set openssl (required library) path to /usr/local/src/openssl-1.1.0f that where you downloaded source to.
 
 Next, add ssl http module for enables used SSL/TLS (https) in nginx. (VERY recommeded I love HTTPS !!)
 
@@ -877,9 +877,9 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 --http-scgi-temp-path=/var/cache/nginx/scgi_temp \
 --user=nginx \
 --group=nginx \
---with-pcre=/usr/local/src/pcre-8.40 \
+--with-pcre=/usr/local/src/pcre-8.41 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.0.2l \
+--with-openssl=/usr/local/src/openssl-1.1.of \
 --with-http_ssl_module \
 --with-http_v2_module \
 --with-http_realip_module \
