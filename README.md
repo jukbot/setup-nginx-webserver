@@ -473,22 +473,22 @@ yum info openssl
 ```
 cd /usr/local/src/
 wget https://www.openssl.org/source/openssl-1.1.0-latest.tar.gz
-tar -zxf openssl-1.1.0f.tar.gz
+tar -zxf openssl-1.1.0-latest.tar.gz
 ```
 
 Note: 
 - If you want to install other version you can download it from https://www.openssl.org/source/
-- We will use lastest openssl version 1.1.x from official website.
+- We will use latest openssl version 1.1.x from official website.
 
 
-4). Go to the source directory, then generate a config file by follow commands
+4). Go to the source directory, then generate a config file with the following commands
 
 ```
 cd openssl-1.1.0f
 ./config
 ```
 
-Alphabet suffix 'l' of openssl version number is depended on release of openssl.
+Alphabet suffix 'l' of openssl version number depends on release of openssl.
 
 5). Compile the source, test and then install the package (need root permission)
 
@@ -498,7 +498,7 @@ make test
 make install
 ```
 
-Note: This will take a while upon CPU capacity. If your CPU have more than 1 core you can added suffix -j4 for using 4 cores to compile the source code.
+Note: This will take a while depending on CPU capacity. If your CPU has more than 1 core you can added suffix -j4 for using 4 cores to compile the source code.
 
 For example: make -j4 to use all 4 cores to compile the source code.
 
@@ -515,7 +515,7 @@ ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
 8). Verify the OpenSSL version 
 ```
 openssl version
-OpenSSL 1.0.2l  25 May 2017
+OpenSSL 1.1.0f  25 May 2017
 ```
 
 !! Done. Easy right let continue the next package ? !!
