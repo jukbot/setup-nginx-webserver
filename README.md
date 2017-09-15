@@ -509,7 +509,7 @@ mv /usr/bin/openssl /root/
 
 7). Create a symbolic link
 ```
-ln -s /usr/local/ssl/bin/openssl /usr/bin/openssl
+ln -s /usr/local/bin/openssl /usr/bin/openssl
 ```
 
 8). Verify the OpenSSL version 
