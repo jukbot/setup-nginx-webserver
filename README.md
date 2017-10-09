@@ -1351,19 +1351,6 @@ server {
         try_files $uri.html $uri $uri/ =404;
     }
 
-    # cache.appcache, your document html and data
-    location ~* \.(?:manifest|appcache|html?|xml|json)$ {
-    access_log off;
-    add_header Pragma "no-cache";
-    add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header Referrer-Policy "no-referrer";
-    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"; # HSTS (ngx_http_headers_module required)
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
-    }
-
      # Media: images, icons, video, audio, HTC, CSS, JS
      location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|woff2|css|js)$ {
      expires 30d;
@@ -1393,7 +1380,8 @@ server {
      if ($http_user_agent ~* LWP::Simple|wget|libwww-perl) {
      return 403;
      }
-         # Deny scripts inside writable directories
+     
+     # Deny scripts inside writable directories
      location ~* /(img|cache|media|logs|tmp|image|images)/.*.(php|pl|py|jsp|asp|sh|cgi)$ {
      return 403;
      }
@@ -1401,7 +1389,7 @@ server {
     # certs sent to the client in SERVER HELLO are concatenated in ssl_certificat
     ssl_certificate /etc/ssl/<yourweb-ssl-folder>/cert.crt;
     ssl_certificate_key /etc/ssl/<yourweb-ssl-folder>/privkey.key;
-    ssl_session_timeout 1h;
+    ssl_session_timeout 1d;
     ssl_session_cache shared:SSL:10m;
     ssl_session_tickets off;
 
@@ -1419,6 +1407,17 @@ server {
     ssl_stapling on;
     ssl_stapling_verify on;
     ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
+
+    # Security Header
+    add_header Pragma "no-cache";
+    add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header Referrer-Policy "no-referrer";
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload"; # HSTS (ngx_http_headers_module required)
+    # Please add you own resource to this CSP!!
+    #add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
 
     # Google DNS to resolve domain
     resolver 8.8.8.8 8.8.4.4 valid=360s ipv6=off;
