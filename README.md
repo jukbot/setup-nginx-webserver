@@ -1,5 +1,5 @@
 # Setup a Perfect Nginx Web Server CentOS 7 Guide 
-(Updated Sep 4, 2017)
+(Updated Oct 10, 2017)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -991,7 +991,7 @@ sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 sudo nano /etc/init.d/nginx then copy script below
 ```
 
-```
+```shell
 #!/bin/sh
 #
 # nginx - this script starts and stops the nginx daemon
@@ -1216,7 +1216,7 @@ vi nginx.conf
 
 #2. Config the file as below 
 
-```
+```json
 user  nginx;
 worker_processes auto;
 pid   /var/run/nginx.pid;
@@ -1328,12 +1328,12 @@ vi <domainname>.conf
 
 #5. Config file as below
 
-```
+```json
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
     server_name <your-domain-name> www.<your-domain-name>;
-    return 301 https://<your-domain-name>$request_uri;
+    return 301 https://$host$request_uri;
 }
 
 server {
@@ -1348,7 +1348,7 @@ server {
 
     location / {
         limit_conn conn_limit_per_ip 10;
-        limit_req zone=req_limit_per_ip burst=5 nodelay;
+        limit_req zone=req_limit_per_ip burst=10 nodelay;
         try_files $uri.html $uri $uri/ =404;
     }
 
@@ -1363,28 +1363,28 @@ server {
      location ~ .(gif|png|jpe?g)$ {
      valid_referers none blocked <your-domain-name> *.<your-domain-name>;
      if ($invalid_referer) {
-        return   403;
+        return 403;
        }
      }
 
      # Deny referal spam
      if ( $http_referer ~* (jewelry|viagra|nude|girl|nudit|casino|poker|porn|sex|teen|babes) ) {
-     return 403;
+        return 403;
      }
 
      # Block bad robots
      if ($http_user_agent ~ (agent1|Cheesebot|msnbot|Purebot|Baiduspider|Lipperhey|Mail.Ru|scrapbot) ) {
-     return 403;
+        return 403;
      }
 
      # Block download agenta
      if ($http_user_agent ~* LWP::Simple|wget|libwww-perl) {
-     return 403;
+        return 403;
      }
      
      # Deny scripts inside writable directories
      location ~* /(img|cache|media|logs|tmp|image|images)/.*.(php|pl|py|jsp|asp|sh|cgi)$ {
-     return 403;
+        return 403;
      }
 
     # certs sent to the client in SERVER HELLO are concatenated in ssl_certificat
@@ -1400,7 +1400,7 @@ server {
     # modern configuration. tweak to your needs.
     ssl_protocols TLSv1.2;
     ssl_ecdh_curve secp384r1;
-    ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
     ssl_prefer_server_ciphers on;
 
     # OCSP Stapling ---
@@ -1410,14 +1410,15 @@ server {
     ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
 
     # Security Header
-    add_header Pragma "no-cache";
+    add_header Pragma no-cache;
     add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
-    add_header X-XSS-Protection "1; mode=block" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header Referrer-Policy "no-referrer";
-    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload"; # HSTS (ngx_http_headers_module required)
-    # Please add you own resource to this CSP!!
+    add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
+    add_header Referrer-Policy same-origin;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-Frame-Options SAMEORIGIN;
+	add_header X-XSS-Protection "1; mode=block";
+    add_header Content-Security-Policy upgrade-insecure-requests;
+    # Please add you own resource to this custom CSP!! and delete the line upper.
     #add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
 
     # Google DNS to resolve domain
