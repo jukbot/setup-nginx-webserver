@@ -236,7 +236,7 @@ sudo vi /etc/sysctl.conf
 ```
 
 2. Edit file as following configuration
-```
+```text
 # Increase number of incoming connections
 net.core.somaxconn = 16384
 
@@ -959,7 +959,7 @@ kill -9 PID-Of-Nginx
 3.8 add nginx as systemd service by create a file "nginx.service" in /lib/systemd/system/nginx.service
  then copy below into the file
  
-```
+```text
 [Unit]
 Description=The nginx HTTP and reverse proxy server
 After=syslog.target network.target remote-fs.target nss-lookup.target
@@ -1216,7 +1216,7 @@ vi nginx.conf
 
 #2. Config the file as below 
 
-```json
+```nginx
 user  nginx;
 worker_processes auto;
 pid   /var/run/nginx.pid;
@@ -1328,7 +1328,7 @@ vi <domainname>.conf
 
 #5. Config file as below
 
-```json
+```nginx
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
@@ -1416,7 +1416,7 @@ server {
     add_header Referrer-Policy same-origin;
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options SAMEORIGIN;
-	add_header X-XSS-Protection "1; mode=block";
+    add_header X-XSS-Protection "1; mode=block";
     add_header Content-Security-Policy upgrade-insecure-requests;
     # Please add you own resource to this custom CSP!! and delete the line upper.
     #add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
