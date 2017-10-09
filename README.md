@@ -1239,6 +1239,10 @@ http {
     server_name_in_redirect off;
     limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
     limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=5r/s;
+    keepalive_requests           100000;
+    keepalive_timeout            60s;
+    send_timeout                 60s;
+    
     open_file_cache max=200000 inactive=20s; 
     open_file_cache_valid 30s; 
     open_file_cache_min_uses 2;
@@ -1255,12 +1259,9 @@ http {
     large_client_header_buffers  2 1k;
     output_buffers               1 32k;
     postpone_output              1460;
-    keepalive_timeout            30s;
-    keepalive_requests           100000;
-    send_timeout                 30s;
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
-
+    
     ##
     # Logging Settings
     ##
