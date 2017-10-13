@@ -1,5 +1,5 @@
-# Setup a Perfect Nginx Web Server CentOS 7 Guide 
-(Updated Oct 10, 2017)
+# Setup a Secure Nginx Web Server CentOS 7 
+(Updated Oct 14, 2017)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -11,6 +11,17 @@ However, most libraries and applications that preinstalled are obsolete.
 So this article will guide you to build a perfect web server with modern applications (HTTP/2 support).
 
 Please read: This article **compatible with RedHat Enterprise Linux 7.x**, except some repository links need to change upon vendors and processor architecture of your hardware.
+
+**ANNOUCEMENT**
+```
+CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2k, which provides a number of enhancements, new features, and bug fixes, including:
+- Added support for the Datagram Transport Layer Security TLS (DTLS) protocol version 1.2.
+- Added support for the automatic elliptic curve selection for the ECDHE key exchange in TLS.
+- Added support for the Application-Layer Protocol Negotiation (ALPN). -- YESSSSSSS!!!
+- Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
+
+Reference from https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/7.4_release_notes/index
+```
 
 ## Introduction
 
@@ -449,6 +460,22 @@ So to enable HTTP/2 on ALPN in chrome browser you need to be sure that you have 
 
 According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 
+**RedHat/CentOS 7.4 now supported Application-Layer Protocol Negotiation (ALPN)**
+
+```
+In CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2k, which provides a number of enhancements, new features, and bug fixes, including:
+- Added support for the Datagram Transport Layer Security TLS (DTLS) protocol version 1.2.
+- Added support for the automatic elliptic curve selection for the ECDHE key exchange in TLS.
+- Added support for the Application-Layer Protocol Negotiation (ALPN). 
+- Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
+
+Reference from https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/7.4_release_notes/index
+```
+
+To update your linux kernel just use command
+```
+sudo yum upgrade
+```
 
 ### The following steps describe how to upgrade OpenSSL 
 
@@ -1390,6 +1417,7 @@ server {
     # certs sent to the client in SERVER HELLO are concatenated in ssl_certificat
     ssl_certificate /etc/ssl/<yourweb-ssl-folder>/cert.crt;
     ssl_certificate_key /etc/ssl/<yourweb-ssl-folder>/privkey.key;
+    ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
     ssl_session_timeout 1d;
     ssl_session_cache shared:SSL:10m;
     ssl_session_tickets off;
@@ -1407,13 +1435,12 @@ server {
     # fetch OCSP records from URL in ssl_certificate and cache them
     ssl_stapling on;
     ssl_stapling_verify on;
-    ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
 
     # Security Header
     add_header Pragma no-cache;
     add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
     add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
-    add_header Referrer-Policy same-origin;
+    add_header Referrer-Policy no-referrer, strict-origin-when-cross-origin;
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options SAMEORIGIN;
     add_header X-XSS-Protection "1; mode=block";
