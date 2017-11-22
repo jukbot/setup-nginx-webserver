@@ -1,5 +1,5 @@
 # Setup a Secure Nginx Web Server CentOS 7 
-(Updated Oct 14, 2017)
+(Updated Nov 22, 2017)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -236,7 +236,7 @@ sudo systemctl reload iptables
 With the above step completed, your CentOS 7 server should now be reasonably secure and be ready for use in production.
 
 
-### Step 6 - Optimized system configuration for maximum concurrancy.
+### Step 6 - Optimized system configuration for maximum concurrency.
 
 In default centos server is not fully optimized to make full use of available hardware. 
 This means it might fail under high load. So we need to config the sysctl.conf file for optimization.
@@ -247,9 +247,9 @@ sudo vi /etc/sysctl.conf
 ```
 
 2. Edit file as following configuration
-```text
+```
 # Increase number of incoming connections
-net.core.somaxconn = 16384
+net.core.somaxconn = 250000
 
 # Increase the maximum amount of option memory buffers
 net.core.optmem_max = 25165824
@@ -257,6 +257,7 @@ net.core.optmem_max = 25165824
 # Increase Linux auto tuning TCP buffer limits
 # min, default, and max number of bytes to use
 # set max to at least 4MB, or higher if you use very high BDP paths
+net.core.rmem_default = 8388608
 net.core.rmem_max = 16777216
 net.core.wmem_max = 16777216
 net.core.netdev_max_backlog = 65536
@@ -266,6 +267,7 @@ net.ipv4.tcp_fin_timeout = 15
 
 # Number of times SYNACKs for passive TCP connection.
 net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_syn_retries = 2
 
 # Decrease the time default value for connections to keep alive
 net.ipv4.tcp_keepalive_time = 300
@@ -276,7 +278,7 @@ net.ipv4.tcp_keepalive_intvl = 15
 net.ipv4.tcp_timestamps = 1
 
 # Allowed local port range
-net.ipv4.ip_local_port_range = 2000 65535
+net.ipv4.ip_local_port_range = 2000 65000
 
 # Turn on window scaling which can enlarge the transfer window:
 net.ipv4.tcp_window_scaling = 1
@@ -336,10 +338,8 @@ net.ipv4.tcp_max_tw_buckets = 1440000
 net.ipv4.tcp_tw_recycle = 1
 net.ipv4.tcp_tw_reuse = 1
 
-# Disable ipv6 for security (!! Optional if you're using ipv6 !!)
+# !! Disable ipv6 for security (!! Optional if you're using ipv6 !!)
 net.ipv6.conf.all.disable_ipv6= 1
-net.ipv6.conf.default.disable_ipv6= 1
-net.ipv6.conf.lo.disable_ipv6= 1
 ```
 
 3. Reload the systemctl file
@@ -511,7 +511,7 @@ Note:
 4). Go to the source directory, then generate a config file with the following commands
 
 ```
-cd openssl-1.1.0f
+cd openssl-1.1.0g
 ./config
 ```
 
@@ -542,7 +542,7 @@ ln -s /usr/local/bin/openssl /usr/bin/openssl
 8). Verify the OpenSSL version 
 ```
 openssl version
-OpenSSL 1.1.0f  25 May 2017
+OpenSSL 1.1.0g  2 Nov 2017
 ```
 
 !! Done. Easy right let continue the next package ? !!
@@ -757,7 +757,7 @@ Prior to compiling NGINX from the sources, it is necessary to install its depend
 The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
 ```
 cd /usr/local/src
-wget ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-8.41.tar.gz
+wget https://ftp.pcre.org/pub/pcre/pcre-8.41.tar.gz
 tar -zxf pcre-8.41.tar.gz
 cd pcre-8.41
 ./configure
@@ -769,7 +769,7 @@ sudo make install
 The zlib library required by NGINX Gzip module for headers compression:
 ```
 cd /usr/local/src
-wget http://zlib.net/zlib-1.2.11.tar.gz
+wget https://zlib.net/zlib-1.2.11.tar.gz
 tar -zxf zlib-1.2.11.tar.gz
 cd zlib-1.2.11
 ./configure
@@ -787,9 +787,9 @@ Please see the OpenSSL (with ALPN support) section
 
 ```
 cd /usr/local/src
-wget http://nginx.org/download/nginx-1.12.1.tar.gz
-tar zxf nginx-1.12.1.tar.gz
-cd nginx-1.12.1
+wget https://nginx.org/download/nginx-1.12.2.tar.gz
+tar zxf nginx-1.12.2.tar.gz
+cd nginx-1.12.2
 ```
 
 Other version please see https://nginx.org/en/download.html
@@ -801,7 +801,7 @@ NOTE!! Please change the library version to your current library path version. F
 
 --with-pcre=/usr/local/src/pcre-8.41 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.1.0f \
+--with-openssl=/usr/local/src/openssl-1.1.0g \
 ```
 
 #### NGINX Compile configure detail (TL;DR)
@@ -840,7 +840,7 @@ Next, set pcre (required library) path to /usr/local/src/pcre-8.41 that where yo
 
 Next, set zlib (required library) path to /usr/local/src/zlib-1.2.11 that where you downloaded source to.
 
-Next, set openssl (required library) path to /usr/local/src/openssl-1.1.0f that where you downloaded source to.
+Next, set openssl (required library) path to /usr/local/src/openssl-1.1.0g that where you downloaded source to.
 
 Next, add ssl http module for enables used SSL/TLS (https) in nginx. (VERY recommeded I love HTTPS !!)
 
@@ -890,7 +890,7 @@ Next, add stream module to enable the TCP proxy functionality. (OPTIONAL)
 Next, add stream_ssl_module to provide support for a stream proxy server to work with the SSL/TLS protocol. (OPTIONAL)
 (Requires an SSL library such as OpenSSL.)
 
-NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with nginx 1.11.5 (11 Oct 2016) now this configure option was removed and IPv6 support is configured by default automatically. 
+NOTE: Someone ask WHERE IS ipv6 module? according to the changes with nginx 1.11.5 (11 Oct 2016) now this configure option was removed and IPv6 support is configured by default automatically. 
 
 
 ```
@@ -914,7 +914,7 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 --with-ld-opt="-lrt" \
 --with-pcre=/usr/local/src/pcre-8.41 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.1.0f \
+--with-openssl=/usr/local/src/openssl-1.1.0g \
 --with-http_ssl_module \
 --with-http_v2_module \
 --with-http_realip_module \
@@ -943,8 +943,7 @@ NOTE: Someone ask WHERE IS FU_KING ipv6 module? according to the changes with ng
 
 3.2 Compile and install the build:
 ```
-make
-sudo make install
+sudo make && sudo make install
 ```
 
 3.3 After the installation process has finished with success add nginx system user (with /etc/nginx/ as his home directory and with no valid shell), the user that Nginx will run as by issuing the following command.
@@ -963,6 +962,7 @@ user nginx;
 
 3.5 Config the firewall
 ```
+systemctl enable firewalld.service
 firewall-cmd --permanent --zone=public --add-service=http
 firewall-cmd --permanent --zone=public --add-service=https
 systemctl restart firewalld.service
@@ -1168,9 +1168,9 @@ nginx -V
 ```
 and it will show
 ```
-nginx version: nginx/1.12.1
+nginx version: nginx/1.12.2
 built by gcc 4.8.5 20150623 (Red Hat 4.8.5-11) (GCC) 
-built with OpenSSL 1.1.0f  25 May 2017
+built with OpenSSL 1.1.0g  2 Nov 2017
 TLS SNI support enabled
 configure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-pcre-jit --with-ld-opt=-lrt --with-pcre=/usr/local/src/pcre-8.41 --with-zlib=/usr/local/src/zlib-1.2.11 --with-openssl=/usr/local/src/openssl-1.1.0f --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-threads --with-file-aio --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_auth_request_module --with-http_random_index_module --with-http_secure_link_module --with-http_slice_module --with-http_degradation_module --with-http_stub_status_module --with-mail --with-mail_ssl_module --with-stream --with-stream_ssl_module --with-stream_realip_module --add-module=/usr/local/src/ngx_brotli
 ```
@@ -1246,69 +1246,74 @@ vi nginx.conf
 ```nginx
 user  nginx;
 worker_processes auto;
-pid   /var/run/nginx.pid;
 worker_rlimit_nofile 100000;
+pid   /var/run/nginx.pid;
 error_log /var/log/nginx/error.log crit;
 
 events {
-    worker_connections 1024; 
+    worker_connections 250000; 
     use epoll;
     multi_accept on;
 }
+
 
 http {
     sendfile on;
     tcp_nopush on;
     tcp_nodelay on;
-    types_hash_max_size 2048; #host bucket
+    types_hash_max_size 2048; 
+    server_tokens off; 
+    
     reset_timedout_connection on;
-    server_tokens off; #hide server version
     server_name_in_redirect off;
-    limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
-    limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=5r/s;
     keepalive_requests           100000;
     keepalive_timeout            60s;
-    send_timeout                 60s;
-    
-    open_file_cache max=200000 inactive=20s; 
+    send_timeout                 30s;
+    #fastcgi for PHP
+    #fastcgi_read_timeout 300; 
+
+    ##
+    # OpenFile Cache Settings
+    ##
+    open_file_cache max=1000 inactive=20s; 
     open_file_cache_valid 30s; 
     open_file_cache_min_uses 2;
-    open_file_cache_errors on;
+    open_file_cache_errors off;
+
+    ##
+    # Limit request per IP (DDoS prevention)
+    ##
+    limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
+    limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=5r/s;
+    limit_req_status 403;
 
     ##
     # Buffer Limit Settings
     ##
+    client_header_buffer_size    1k;
     client_body_buffer_size      128k;
     client_max_body_size         10m;
-    client_body_timeout          10s;
-    client_header_buffer_size    1k;
-    client_header_timeout        10s;
-    large_client_header_buffers  2 1k;
+    client_header_timeout        30s;
+    client_body_timeout          30s;
+    large_client_header_buffers  4 256k;
     output_buffers               1 32k;
     postpone_output              1460;
-    include /etc/nginx/mime.types;
+
+    include mime.types;
     default_type application/octet-stream;
     
     ##
     # Logging Settings
     ##
+    log_format main      '$remote_addr - $remote_user [$time_local]  '
+      '"$request" $status $bytes_sent '
+      '"$http_referer" "$http_user_agent" '
+  	  '"$gzip_ratio" "$http_x_forwarded_for"';
+    log_format compression '$remote_addr - $remote_user [$time_local] ' '"$request" $status $body_bytes_sent ' '"$http_referer" "$http_user_agent" "$gzip_ratio"';
     access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log error;
+    error_log /var/log/nginx/error.log;
     access_log off;
     log_not_found off;
-
-    ##
-    # Gzip Settings
-    ##
-    #gzip on;
-    #gzip_buffers                32 8k;
-    #gzip_comp_level                 6;
-    #gzip_disable              "msie6";
-    #gzip_http_version             1.1;
-    #gzip_vary                      on;
-    #gzip_min_length              1000;
-    #gzip_proxied                  any;
-    #gzip_types text/plain text/css text/javascript text/xml application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
 
     ##
     # Brotli Settings
@@ -1318,24 +1323,38 @@ http {
     brotli_min_length 1000;
     brotli_buffers 32 8k;
     brotli_comp_level 6;
-    brotli_types text/plain text/css text/javascript text/xml application/javascript application/x-javascript  application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
+    brotli_types text/plain text/css text/javascript text/xml font/opentype application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
     
     ##
-    # Proxy Cache
+    # Proxy Cache Settings
     ##
-    proxy_cache_path /var/nginx/cache levels=1:2 keys_zone=one:10m inactive=60m max_size=200m;
     proxy_cache one;
     proxy_cache_min_uses 3;
     proxy_cache_revalidate on;
+    proxy_cache_bypass  $http_cache_control;
+    proxy_cache_path /var/nginx/cache levels=1:2 keys_zone=one:10m inactive=60m max_size=512m use_temp_path=off;
     proxy_cache_key "$host$request_uri$cookie_user";
-    proxy_cache_valid any      1m;
-    proxy_cache_valid 200 302 30m;
+    proxy_cache_use_stale error timeout updating http_500 http_502 http_503 http_504;
+    proxy_cache_valid any 1m;
 
     ##
-    # Virtual Host Configs for multiple size
+    # Gzip Settings
+    ##
+    #gzip on;
+    #gzip_buffers                16 8k;
+    #gzip_comp_level                 6;
+    #gzip_disable              "msie6";
+    #gzip_http_version             1.1;
+    #gzip_vary                      on;
+    #gzip_min_length              1000;
+    #gzip_proxied                  any;
+    #gzip_types text/plain text/css text/javascript text/xml application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
+
+    ##
+    # Virtual Host Configs for multiple sites
     ##
     server_names_hash_bucket_size 64;
-    include /etc/nginx/sites-enabled/*;
+    include sites-enabled/*;
 }
 ```
 
@@ -1366,73 +1385,96 @@ server {
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
+    server_name <your-domain-name>;
+
     root /var/www/<web-folder-name>/html;
     index index.html;
-    server_name <your-domain-name>;
     charset utf-8;
+
+    access_log  off;
+    error_log   /var/log/nginx.error_log error;
+
     error_page  404     /404.html;
     error_page  403     /403.html;
+    error_page  500 502 503 504 /50x.html;
 
     location / {
         limit_conn conn_limit_per_ip 10;
         limit_req zone=req_limit_per_ip burst=10 nodelay;
-        try_files $uri.html $uri $uri/ =404;
+        try_files $uri $uri/ =404;
     }
 
-     # Media: images, icons, video, audio, HTC, CSS, JS
-     location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|woff2|css|js)$ {
-     expires 30d;
-     access_log off;
-     add_header Cache-Control "public";
-     }
+    # If you using as proxy server
+    #  location / {
+    #         include proxy_params;
+    #         add_header X-Proxy-Cache $upstream_cache_status;
+    #         proxy_pass         http://127.0.0.1:9000;
+    #         proxy_redirect     off;
+    #         proxy_set_header   Host             $host;
+    #         proxy_set_header   X-Real-IP        $remote_addr;
+    #         proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+    #         proxy_connect_timeout      60;
+    #         proxy_send_timeout         60;
+    #         proxy_read_timeout         60;
+    #         proxy_buffer_size          4k;
+    #         proxy_buffers              4 32k;
+    #         proxy_busy_buffers_size    64k;
+    #         proxy_temp_file_write_size 64k;
+    #         proxy_temp_path            /etc/nginx/proxy_temp;
+    #         limit_conn conn_limit_per_ip 10;
+    #         limit_req zone=req_limit_per_ip burst=10 nodelay;
+    #     }
 
-     # Deny hotlinking
-     location ~ .(gif|png|jpe?g)$ {
-     valid_referers none blocked <your-domain-name> *.<your-domain-name>;
-     if ($invalid_referer) {
-        return 403;
-       }
-     }
+    # cache.appcache, your document html and data
+    location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+        expires -1;
+        access_log off;
+    }
 
-     # Deny referal spam
-     if ( $http_referer ~* (jewelry|viagra|nude|girl|nudit|casino|poker|porn|sex|teen|babes) ) {
-        return 403;
-     }
+    # Feed
+    location ~* \.(?:rss|atom)$ {
+        expires 1h;
+        access_log off;
+        add_header Cache-Control "public";
+    }
 
-     # Block bad robots
-     if ($http_user_agent ~ (agent1|Cheesebot|msnbot|Purebot|Baiduspider|Lipperhey|Mail.Ru|scrapbot) ) {
-        return 403;
-     }
+    # Media: images, icons, video, audio, HTC
+    location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|pdf)$ {
+        expires 30d;
+        access_log off;
+        add_header Cache-Control "public";
+    }
 
-     # Block download agenta
-     if ($http_user_agent ~* LWP::Simple|wget|libwww-perl) {
-        return 403;
-     }
+    # CSS and Javascript
+    location ~* \.(?:css|js)$ {
+        expires 1d;
+        access_log off;
+        add_header Cache-Control "public";
+    }
      
-     # Deny scripts inside writable directories
-     location ~* /(img|cache|media|logs|tmp|image|images)/.*.(php|pl|py|jsp|asp|sh|cgi)$ {
+    # Deny scripts inside writable directories
+    location ~* /(img|cache|media|logs|tmp|image|images)/.*.(php|pl|py|jsp|asp|sh|cgi)$ {
         return 403;
-     }
+    }
 
     # certs sent to the client in SERVER HELLO are concatenated in ssl_certificat
     ssl_certificate /etc/ssl/<yourweb-ssl-folder>/cert.crt;
     ssl_certificate_key /etc/ssl/<yourweb-ssl-folder>/privkey.key;
     ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
-    ssl_session_timeout 1d;
+    ssl_session_timeout 10m;
     ssl_session_cache shared:SSL:10m;
     ssl_session_tickets off;
 
-    # Diffie-Hellman parameter for DHE ciphersuites, recommended 4096 bits
+    # Diffie-Hellman parameter for D    HE ciphersuites, recommended 4096 bits
     ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
 
-    # modern configuration. tweak to your needs.
+    # ssl key exchanges
     ssl_protocols TLSv1.2;
     ssl_ecdh_curve secp384r1;
     ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
     ssl_prefer_server_ciphers on;
 
-    # OCSP Stapling ---
-    # fetch OCSP records from URL in ssl_certificate and cache them
+    # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them
     ssl_stapling on;
     ssl_stapling_verify on;
 
