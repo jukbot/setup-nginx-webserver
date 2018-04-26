@@ -1,5 +1,5 @@
-# Setup a Secure Nginx Web Server CentOS 7 
-(Updated Nov 22, 2017)
+# Setup a Secure Nginx Web Server CentOS 7.x
+(Updated Apr 26, 2018)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -8,7 +8,7 @@
 I've gather informations and created this article for sysadmin who're using CentOS or Enterprise Linux.
 Because most of these linux branches have a long term support, f_cking stable and secured (SELinux). 
 However, most libraries and applications that preinstalled are obsolete. 
-So this article will guide you to build a perfect web server with modern applications (HTTP/2 support).
+So this article will guide you STEP BY STEP to build a perfect web server with understanding.
 
 Please read: This article **compatible with RedHat Enterprise Linux 7.x**, except some repository links need to change upon vendors and processor architecture of your hardware.
 
@@ -26,6 +26,15 @@ Reference from https://access.redhat.com/documentation/en-us/red_hat_enterprise_
 ## Introduction
 
 The new CentOS 7 server has to be customized before it can be put into use as a production system. In this article, will help you to increase the security and usability of your server with the lastest stable packages and will give you a solid foundation for subsequent actions.
+
+
+## Support Architecture
+
+| CPU Architecture Name | Market Name | 
+|---------|---------------|
+| x86_64 | Intel 6 | 
+| ppc64le | PowerPC 
+
 
 ## Prerequisites
 
@@ -95,8 +104,10 @@ If the login is successful, you may close the other terminal. From now on, all c
 Since you can now log in as a standard user using SSH keys, a good security practice is to configure SSH so that the root login and password authentication are both disallowed. Both settings have to be configured in the SSH daemon's configuration file. So, open it using nano.
 
 ```
-sudo nano /etc/ssh/sshd_config
+sudo vi /etc/ssh/sshd_config
 ```
+To exit vim editor press ESC then type :x to save and exit or :q! to ignore and exit 
+
 Look for the PermitRootLogin line, uncomment it and set the value to no.
 ```
 PermitRootLogin     no
@@ -342,6 +353,8 @@ net.ipv4.tcp_tw_reuse = 1
 net.ipv6.conf.all.disable_ipv6= 1
 ```
 
+Reference: https://www.nginx.com/resources/wiki/start/topics/examples/SSL-Offloader/
+
 3. Reload the systemctl file
 ```
 sysctl -p
@@ -358,9 +371,11 @@ To upgrade installed packages
 sudo yum -y upgrade
 ```
 
+
+
 ## Install Common Packages
 
-### Yum Utils 
+### 1 Yum Utils 
 
 **Yum-utils** is a collection of utilities and plugins extending and supplementing yum in different ways. It included in the base repo (which is enabled by default). However if you install as minimal you have to install it manually by typing. 
 
@@ -372,7 +387,7 @@ Read more about yum-utils
 https://www.if-not-true-then-false.com/2012/delete-remove-old-kernels-on-fedora-centos-red-hat-rhel/
 http://www.tecmint.com/linux-yum-package-management-with-yum-utils/
 
-### Extra Packages for Enterprise Linux (EPEL)
+### 2 Extra Packages for Enterprise Linux (EPEL)
 
 How do I install the extra repositories such as Fedora EPEL repo on a Red Hat Enterprise Linux server version 7.x or CentOS Linux server version 7.x?
 
@@ -382,26 +397,13 @@ You can easily install various packages by configuring a CentOS 7.x or RHEL 7.x 
 
 The following instructions assumes that you are running command as root user on a CentOS/RHEL 7.x system and want to use use Fedora Epel repos.
 
-#### Method 1: Install EPEL repositories from Base Linux repository (recommended)
+#### Install Extra Packages for Enterprise Linux repository configuration
 
-Install Epel repo using the following command:
+Install epel release for CentOS and RHEL 7.x using yum install
 ```
-sudo yum -y install epel-release
+sudo yum install epel-release
 ```
-Refresh repo by typing the following commad: 
-```
-yum repolist
-```
-
-#### Method 2: Install EPEL repositories from dl.fedoraproject.org 
-
-The command is as follows to download epel release for CentOS and RHEL 7.x using wget command:
-```
-cd /tmp
-wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-sudo rpm -Uvh epel-release-latest-7*.rpm
-```
-Refresh repo by typing the following commad: 
+Refresh repo by typing the following command: 
 ```
 yum repolist
 ```
@@ -415,7 +417,6 @@ sudo yum --disablerepo="*" --enablerepo="epel" list available
 
 Example: Search and install htop package from epel repo on a CentOS/RHEL 7.x
 
-### Search it 
 ```
 sudo yum search htop
 sudo yum info htop
@@ -426,14 +427,13 @@ And, there you have it, a larger number of packages to install from EPEL repo on
 Red Hat Enterprise Linux (RHEL) version 7.x.
 
 
-### OpenSSL(with ALPN support)
+### 3 OpenSSL (with ALPN support)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/OpenSSL-Logo.png" alt="OPENSSL"/>
 </p>
 
 **OpenSSL** is a software library to be used in applications that need to secure communications against eavesdropping or need to ascertain the identity of the party at the other end. It has found wide use in internet web servers, serving a majority of all web sites.
-
 
 **Application-Layer Protocol Negotiation (ALPN)** is a Transport Layer Security (TLS) extension for application layer protocol negotiation. ALPN allows the application layer to negotiate which protocol should be performed over a secure connection in a manner which avoids additional round trips and which is independent of the application layer protocols. It is used by HTTP/2.
 
@@ -454,13 +454,13 @@ The table summarizes operating system support for ALPN and NPN.
   </a>
 </p>
 
-As you can see, only Ubuntu 16.04 LTS supports ALPN. This means that if you’re running your website on any other major operating system, the OpenSSL version shipped with the operating system does not support ALPN and Chrome users will be downgraded to HTTP/1.1
+As you can see, only Ubuntu >= 16.04 LTS supports ALPN. This means that if you’re running your website on any other major operating system, the OpenSSL version shipped with the operating system does not support ALPN and Chrome users will be downgraded to HTTP/1.1
 
 So to enable HTTP/2 on ALPN in chrome browser you need to be sure that you have already installed ***OpenSSL that supported ALPN** which is version >= 1.0.2.
 
 According to https://en.wikipedia.org/wiki/OpenSSL#Major_version_releases
 
-**RedHat/CentOS 7.4 now supported Application-Layer Protocol Negotiation (ALPN)**
+**RedHat/CentOS >= 7.4 now supported Application-Layer Protocol Negotiation (ALPN)**
 
 ```
 In CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2k, which provides a number of enhancements, new features, and bug fixes, including:
@@ -477,47 +477,41 @@ To update your linux kernel just use command
 sudo yum upgrade
 ```
 
-### The following steps describe how to upgrade OpenSSL 
+### The following steps describe how to upgrade OpenSSL to the latest version 
 
-To compile openssl from source you need to install compiler and required libraries to build nginx.
+Prerequired: To compile openssl from source you need to install compiler and required libraries to build nginx.
 ```
 sudo yum groupinstall 'Development Tools'
 sudo yum -y install gcc gcc-c++ make unzip autoconf automake zlib-devel pcre-devel openssl-devel zlib-devel pam-devel
 ```
 
-1). Verify the current openssl version by command
+To verify the current openssl version by command
 ```
 openssl version
 OpenSSL 1.0.1e-fips 11 Feb 2013
 ```
 
-2). To view the lastest openssl package from base repository
+To view the lastest openssl package from current base repository
 ```
 yum info openssl
 ```
 
-3). Download the latest version of OpenSSL, do as follows:
+1). Download the latest version of OpenSSL and generate the config, as follows:
 ```
 cd /usr/local/src/
 wget https://www.openssl.org/source/openssl-1.1.0-latest.tar.gz
 tar -zxf openssl-1.1.0-latest.tar.gz
+
+cd openssl-1.1.0h
+./config
 ```
 
 Note: 
 - If you want to install other version you can download it from https://www.openssl.org/source/
-- We will use latest openssl version 1.1.x from official website.
+- We will use latest openssl version 1.1.0 (Long Term Support Version) from official website.
+- Alphabet suffix 'h' of openssl version number depends on release of openssl.
 
-
-4). Go to the source directory, then generate a config file with the following commands
-
-```
-cd openssl-1.1.0g
-./config
-```
-
-Alphabet suffix 'l' of openssl version number depends on release of openssl.
-
-5). Compile the source, test and then install the package (need root permission)
+2). Compile the source code, test and then install the package (need root permission)
 
 ```
 make
@@ -525,36 +519,34 @@ make test
 make install
 ```
 
-Note: This will take a while depending on CPU capacity. If your CPU has more than 1 core you can added suffix -j4 for using 4 cores to compile the source code.
+Recommended: 
+- This will take a while depending on your CPU capacity. If your CPU has more than 1 core you can added suffix -j4 for using 4 cores to compile the source code. For example: `make -j4` to use all 4 cores to compile the source code.
 
-For example: make -j4 to use all 4 cores to compile the source code.
-
-6). Move old openssl installed version to the root folder for backup or you can delete it
+3). Move old openssl installed version to the root folder for backup or you can delete it
 ```
 mv /usr/bin/openssl /root/
 ```
 
-7). Create a symbolic link
+4). Create a symbolic link
 ```
 ln -s /usr/local/bin/openssl /usr/bin/openssl
 ```
 
-8). Verify the OpenSSL version 
+5). Verify the OpenSSL version 
 ```
 openssl version
-OpenSSL 1.1.0g  2 Nov 2017
 ```
 
-!! Done. Easy right let continue the next package ? !!
 
-
-### Nginx from source (with ALPN support + HTTP2)
+### 4 Nginx
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/NGINX_logo.png" alt="NGINX"/>
 </p>
 
 Compiling NGINX from the sources provides you with more flexibility: you can add particular NGINX modules or 3rd party modules and apply latest security patches. 
+
+(TL;DR - This section just explain the duty of each modules, can skip to the next section)
 
 #### NGINX Default Modules (No need to config this, it will install as default)
 
@@ -680,7 +672,11 @@ See Thread Pools in NGINX Boost Performance 9x! blog post for details.
 **--with-cpp_test_module --with-debug** Enables the debugging log.
 
 
-#### NGINX 3rd Party Modules (Optional if you think your configure is too mainstream, want to tweak more)
+#### NGINX 3rd Party Modules (Optional module for compile from source method)
+
+<p align="center">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Brotli_logo.jpeg" alt="NGINX_BROTLI_COMPRESSION"/>
+</p>
 
 **ngx_brotli module** - An open source data compression library introducing by Google, based on a modern variant of the LZ77 algorithm, Huffman coding and 2nd order context modeling. (By default nginx bundle with **gzip** compression library)
  
@@ -693,15 +689,6 @@ git clone https://github.com/google/ngx_brotli.git
 cd /usr/local/src/ngx_brotli 
 git submodule update --init
 ```
-
-<p align="center">
-    <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/nginx_page_speed.png" alt="NGINX_PAGESPEED"/>
-</p>
-
-**ngx_pagespeed** - Speeds up your site and reduces page load time by automatically applying web performance best practices to pages and associated assets (CSS, JavaScript, images) without requiring you to modify your existing content or workflow.  
-Rewrites webpages and associated assets to reduce latency and bandwidth
- 
-Installing page speed module https://developers.google.com/speed/pagespeed/module/build_ngx_pagespeed_from_source
 
 -------------------------------------------------------------------------------------------------------------------------
 
@@ -722,28 +709,60 @@ NGINX Open Source is available in 2 versions:
 **The stable version** This version doesn’t have new features, but includes critical bug fixes that are always backported to the mainline version. The stable version is recommended for production servers.
 
 
-### Prerequisites
+### Choosing Between a Prebuilt Package and Compiling from Source
 
-**!! Before we getting start you need to verify that you have already installed openssl with ALPN support**
+Both the NGINX Open Source mainline and stable versions can be installed in two ways:
+
+**Prebuilt binary package.** This is a quick and easy way to install NGINX Open Source. The package includes almost all official NGINX modules and is available for most popular operating systems. See Installing a Prebuilt Package.
+
+**Compile from source.** This way is more flexible: you can add particular modules, including third‑party modules, or apply the latest security patches. See Compiling and Installing from Source for details.
+
+-------------------------------------------------------------------------------------------------------------------------
+
+### METHOD 1: Prebuilt binary package
+=======================
+
+### Step 1 Set up the yum repository for RHEL/CentOS 
+
+Creating the file nginx.repo in /etc/yum.repos.d, for example using vi:
 ```
-openssl version
+sudo vi /etc/yum.repos.d/nginx.repo
 ```
-The openssl version must be 1.0.2 or higher.
+
+Then edit nginx repository meta by add the following lines to nginx.repo: 
+```
+[nginx]
+name=nginx repo
+baseurl=http://nginx.org/packages/centos/7/$basearch/
+gpgcheck=0
+enabled=1
+```
+Save the config by ESC -> :x to save and exit the editor
+
+Note: If you're using RedHat just change os name from `centos` to `rhel` 
 
 
-### Step 1 Install compiler and libraries (If you already installed skip this step)
+### STEP 2 Update the repository, install and start NGINX OSS package:
+```
+sudo yum update
+sudo yum install nginx
+sudo nginx
+```
+
+
+### Step 3 Verify the installation and service status:
+```
+sudo nginx -V
+sudo systemctl status nginx
+```
+
+
+### METHOD 2: Compile from source (If you want to install custom nginx modules)
+=======================
+
+### Step 1 Install compiler and libraries
 
 To compile nginx from source you need to install compiler and required libraries to build nginx.
-
-1.1 Need to install epel repo for additional libraries, if not install by typing
-```
-sudo yum install -y epel-release
-```
-1.2 Then update the os environment
-```
-sudo yum update 
-```
-1.3 Install the compiler 
 ```
 sudo yum groupinstall 'Development Tools'
 sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
@@ -753,20 +772,20 @@ sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-de
 
 Prior to compiling NGINX from the sources, it is necessary to install its dependencies:
 
-2.1 Install PCRE library (January 11, 2017)
-The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
+2.1 PCRE library (March 3, 2018)
+- The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
 ```
 cd /usr/local/src
-wget https://ftp.pcre.org/pub/pcre/pcre-8.41.tar.gz
-tar -zxf pcre-8.41.tar.gz
-cd pcre-8.41
+wget https://ftp.pcre.org/pub/pcre/pcre-8.42.tar.gz
+tar -zxf pcre-8.42.tar.gz
+cd pcre-8.42
 ./configure
 make
 sudo make install
 ```
 
-2.2 Install ZLIB library (January 15, 2017)
-The zlib library required by NGINX Gzip module for headers compression:
+2.2 ZLIB library (January 15, 2017)
+- The zlib library required by NGINX Gzip module for headers compression:
 ```
 cd /usr/local/src
 wget https://zlib.net/zlib-1.2.11.tar.gz
@@ -777,34 +796,25 @@ make
 sudo make install
 ```
 
-2.3 Install OpenSSL library (lastest or >= 1.0.2)
-The OpenSSL library required by NGINX SSL modules to support the HTTPS protocol:
+2.3 OpenSSL library (lastest or >= 1.0.2)
+- The OpenSSL library required by NGINX SSL modules to support the HTTPS protocol:
 
-Please see the OpenSSL (with ALPN support) section
+Please see the OpenSSL section
 
 
 ### Step 3 Download NGINX source code
-
 ```
 cd /usr/local/src
-wget https://nginx.org/download/nginx-1.12.2.tar.gz
-tar zxf nginx-1.12.2.tar.gz
-cd nginx-1.12.2
+wget http://nginx.org/download/nginx-1.14.0.tar.gz
+tar zxf nginx-1.14.0.tar.gz
+cd nginx-1.14.0
 ```
 
-Other version please see https://nginx.org/en/download.html
+Mainline version please see https://nginx.org/en/download.html
 
 3.1 Config the nginx for built
 
-```
-NOTE!! Please change the library version to your current library path version. For example
-
---with-pcre=/usr/local/src/pcre-8.41 \
---with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.1.0g \
-```
-
-#### NGINX Compile configure detail (TL;DR)
+#### NGINX Compile configure detail (TL;DR - Just explain the duty of each packages, can skip to next section)
 
 First, we'll set prefix to /etc/nginx for our nginx installation path. 
 
@@ -892,6 +902,15 @@ Next, add stream_ssl_module to provide support for a stream proxy server to work
 
 NOTE: Someone ask WHERE IS ipv6 module? according to the changes with nginx 1.11.5 (11 Oct 2016) now this configure option was removed and IPv6 support is configured by default automatically. 
 
+```
+NOTE!! Please change the library version to your current library path version. For example
+
+--with-pcre=/usr/local/src/pcre-8.xx \
+--with-zlib=/usr/local/src/zlib-1.2.xx \
+--with-openssl=/usr/local/src/openssl-1.1.0x \
+```
+
+Run the nginx config
 
 ```
 ./configure \
@@ -912,9 +931,9 @@ NOTE: Someone ask WHERE IS ipv6 module? according to the changes with nginx 1.11
 --group=nginx \
 --with-pcre-jit \
 --with-ld-opt="-lrt" \
---with-pcre=/usr/local/src/pcre-8.41 \
+--with-pcre=/usr/local/src/pcre-8.42 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.1.0g \
+--with-openssl=/usr/local/src/openssl-1.1.0h \
 --with-http_ssl_module \
 --with-http_v2_module \
 --with-http_realip_module \
@@ -941,18 +960,19 @@ NOTE: Someone ask WHERE IS ipv6 module? according to the changes with nginx 1.11
 --add-module=/usr/local/src/ngx_brotli 
 ```
 
-3.2 Compile and install the build:
+Then Compile and install the build:
 ```
 sudo make && sudo make install
 ```
 
-3.3 After the installation process has finished with success add nginx system user (with /etc/nginx/ as his home directory and with no valid shell), the user that Nginx will run as by issuing the following command.
+3.2 (FOR SECURITY) Create nginx user and config firewall
 
+After the installation process has finished with success add nginx system user (with /etc/nginx/ as his home directory and with no valid shell), the user that Nginx will run as by issuing the following command.
 ```
 useradd -d /etc/nginx/ -s /sbin/nologin nginx
 ```
 
-3.4 Change user in nginx configure file
+Change user in nginx configure file
 ```
 vi /etc/nginx/nginx.conf
 # Then change the user from nobody to nginx, then save and exit.
@@ -960,7 +980,7 @@ vi /etc/nginx/nginx.conf
 user nginx;
 ```
 
-3.5 Config the firewall
+Config the firewall to allow http connection
 ```
 systemctl enable firewalld.service
 firewall-cmd --permanent --zone=public --add-service=http
@@ -968,24 +988,29 @@ firewall-cmd --permanent --zone=public --add-service=https
 systemctl restart firewalld.service
 ```
 
-3.5 start nginx service by using below command
+3.3 Start nginx service by using below command
 ```
 /usr/sbin/nginx -c /etc/nginx/nginx.conf
 ```
 
-3.6 check nginx process 
+3.4 (OPTIONAL) Check nginx process 
 ```
 ps -ef|grep nginx
 ```
 
-3.7 to stop nginx service using below command
+To stop nginx service using below command
 ```
 kill -9 PID-Of-Nginx
 ```
 
-3.8 add nginx as systemd service by create a file "nginx.service" in /lib/systemd/system/nginx.service
- then copy below into the file
- 
+3.5 (DO ONLY ONCE)* Add nginx as systemd service 
+
+Create a file "nginx.service" in /lib/systemd/system/nginx.service 
+```
+sudo vi /lib/systemd/system/nginx.service
+```
+
+Then copy below into the file and save
 ```text
 [Unit]
 Description=The nginx HTTP and reverse proxy server
@@ -997,8 +1022,6 @@ PIDFile=/run/nginx.pid
 ExecStartPre=/usr/sbin/nginx -t -c  /etc/nginx/nginx.conf
 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
 ExecReload=/bin/kill -s HUP $MAINPID
-# Sleep for 1 second to give PassengerAgent a chance to clean up.
-# Use TERM instead of QUIT to prevent Nginx from leaving stale Unix socket and failing the next start (https://trac.nginx.org/nginx/ticket/753)
 ExecStop=/bin/kill -s TERM $MAINPID ; /bin/sleep 1
 PrivateTmp=true
 
@@ -1007,12 +1030,12 @@ WantedBy=multi-user.target
 ~                             
  ```
  
-3.9 then reload the system files
+3.6 (DO ONLY ONCE)* Reload the system files
 ```
 systemctl daemon-reload
 ```
 
-3.10 create startup script 
+3.7 (DO ONLY ONCE)* Create startup script for automatic start nginx service
 ```
 sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 sudo nano /etc/init.d/nginx then copy script below
@@ -1150,32 +1173,24 @@ case "$1" in
 esac
 ```
 
-3.11 set permission to make this script be executable 
+3.8 (DO ONLY ONCE)* Set permission to make this script be executable 
 ```
 chmod +x /etc/init.d/nginx
 sudo systemctl enable nginx
 ```
 
-3.12 To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
+3.9 (DO ONLY ONCE)* To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
 ```
 sudo chkconfig nginx on
 sudo service nginx restart
 ```
 
-3.13 Finally, to verify nginx version and opensssl that built by type**
+3.10 Finally, to verify nginx version and opensssl that built by type
 ```
 nginx -V
 ```
-and it will show
-```
-nginx version: nginx/1.12.2
-built by gcc 4.8.5 20150623 (Red Hat 4.8.5-11) (GCC) 
-built with OpenSSL 1.1.0g  2 Nov 2017
-TLS SNI support enabled
-configure arguments: --prefix=/etc/nginx --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib64/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/log/nginx/error.log --http-log-path=/var/log/nginx/access.log --pid-path=/var/run/nginx.pid --lock-path=/var/run/nginx.lock --http-client-body-temp-path=/var/cache/nginx/client_temp --http-proxy-temp-path=/var/cache/nginx/proxy_temp --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp --http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp --http-scgi-temp-path=/var/cache/nginx/scgi_temp --user=nginx --group=nginx --with-pcre-jit --with-ld-opt=-lrt --with-pcre=/usr/local/src/pcre-8.41 --with-zlib=/usr/local/src/zlib-1.2.11 --with-openssl=/usr/local/src/openssl-1.1.0f --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-threads --with-file-aio --with-http_addition_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_auth_request_module --with-http_random_index_module --with-http_secure_link_module --with-http_slice_module --with-http_degradation_module --with-http_stub_status_module --with-mail --with-mail_ssl_module --with-stream --with-stream_ssl_module --with-stream_realip_module --add-module=/usr/local/src/ngx_brotli
-```
 
-3.14 Start nginx 
+3.11 Start nginx 
 ```
 sudo systemctl start nginx
 ```
@@ -1190,50 +1205,15 @@ Then manually create the file /var/cache/nginx/client_temp.
 sudo mkdir /var/cache/nginx
 sudo touch /var/cache/nginx/client_temp
 ```
-NOTE: If you want to install speedtest module (By Google) you must installed following libraries
-```
-gcc 
-gcc-c++ 
-pcre-devel 
-zlib-devel 
-make 
-unzip 
-openssl-devel 
-libaio-devel
-glibc 
-glibc-devel 
-glibc-headers
-libevent
-linux-vdso.so.1
-libpthread.so.0
-libcrypt.so.1
-libstdc++.so.6
-librt.so.1
-libm.so.6
-libpcre.so.0
-libssl.so.10
-libcrypto.so.10
-libdl.so.2
-libz.so.1
-libgcc_s.so.1
-libc.so.6
-/lib64/ld-linux-x86-64.so.2
-libfreebl3.so
-libgssapi_krb5.so.2
-libkrb5.so.3
-libcom_err.so.2
-libk5crypto.so.3
-libkrb5support.so.0
-libkeyutils.so.1
-libresolv.so.2
-libselinux.so.1
-```
+
+*DO ONLY ONCE mean if you build newer version of nginx and have done these steps before, you can skip these
+
 
 ### Step 4 Setup Nginx web server (SSL + HTTP2)
 
 For using http2 you need to have certificate (SSL) installed
 
-#1. Go to nginx global file directory
+1. Go to nginx global file directory
 
 ```
 sudo su
@@ -1241,7 +1221,7 @@ cd /etc/nginx/
 vi nginx.conf
 ```
 
-#2. Config the file as below 
+2. Config the file as below 
 
 ```nginx
 user  nginx;
@@ -1255,7 +1235,6 @@ events {
     use epoll;
     multi_accept on;
 }
-
 
 http {
     sendfile on;
@@ -1316,16 +1295,6 @@ http {
     log_not_found off;
 
     ##
-    # Brotli Settings
-    ##
-    brotli on;
-    brotli_static on;
-    brotli_min_length 1000;
-    brotli_buffers 32 8k;
-    brotli_comp_level 6;
-    brotli_types text/plain text/css text/javascript text/xml font/opentype application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
-    
-    ##
     # Proxy Cache Settings
     ##
     proxy_cache one;
@@ -1338,7 +1307,17 @@ http {
     proxy_cache_valid any 1m;
 
     ##
-    # Gzip Settings
+    # Brotli Settings (If you not have brotli install, delete this config)
+    ##
+    brotli on;
+    brotli_static on;
+    brotli_min_length 1000;
+    brotli_buffers 32 8k;
+    brotli_comp_level 6;
+    brotli_types text/plain text/css text/javascript text/xml font/opentype application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
+    
+    ##
+    # Gzip Settings (If have brotli installed, disable this config)
     ##
     #gzip on;
     #gzip_buffers                16 8k;
@@ -1351,28 +1330,28 @@ http {
     #gzip_types text/plain text/css text/javascript text/xml application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
 
     ##
-    # Virtual Host Configs for multiple sites
+    # Virtual Host Configs
     ##
     server_names_hash_bucket_size 64;
     include sites-enabled/*;
 }
 ```
 
-#3. Save and test nginx config then restart nginx service
+3. Save and test nginx config then restart nginx service
 
 ```
 nginx -t
 systemctl restart nginx.service
 ```
 
-#4. Go to sites-available and create the following file to build a block hosting
+4. Go to sites-available and create the following file to build a block hosting
 
 ```
 cd sites-available/
 vi <domainname>.conf
 ```
 
-#5. Config file as below
+5. Config file as below
 
 ```nginx
 server {
@@ -1404,7 +1383,7 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    # If you using as proxy server
+    # If you using as proxy server (eg: webApp, nodeJS)
     #  location / {
     #         include proxy_params;
     #         add_header X-Proxy-Cache $upstream_cache_status;
@@ -1425,27 +1404,27 @@ server {
     #         limit_req zone=req_limit_per_ip burst=10 nodelay;
     #     }
 
-    # cache.appcache, your document html and data
+    # Html, xml, json and data cache timeout (no cache)
     location ~* \.(?:manifest|appcache|html?|xml|json)$ {
         expires -1;
         access_log off;
     }
 
-    # Feed
+    # Feed cache timeout
     location ~* \.(?:rss|atom)$ {
         expires 1h;
         access_log off;
         add_header Cache-Control "public";
     }
 
-    # Media: images, icons, video, audio, HTC
+    # Media: images, icons, video, audio, HTC cache timeout
     location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|pdf)$ {
         expires 30d;
         access_log off;
         add_header Cache-Control "public";
     }
 
-    # CSS and Javascript
+    # CSS and Javascript cache timeout
     location ~* \.(?:css|js)$ {
         expires 1d;
         access_log off;
@@ -1457,7 +1436,7 @@ server {
         return 403;
     }
 
-    # certs sent to the client in SERVER HELLO are concatenated in ssl_certificat
+    # SSL Certificate config
     ssl_certificate /etc/ssl/<yourweb-ssl-folder>/cert.crt;
     ssl_certificate_key /etc/ssl/<yourweb-ssl-folder>/privkey.key;
     ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
@@ -1465,21 +1444,24 @@ server {
     ssl_session_cache shared:SSL:10m;
     ssl_session_tickets off;
 
-    # Diffie-Hellman parameter for D    HE ciphersuites, recommended 4096 bits
+    # Diffie-Hellman parameter for DHE ciphersuites, recommended 4096 bits
+    # to generate your dhparam.pem file, run openssl dhparam -out /etc/nginx/ssl/dhparam.pem 4096 in your SSL store directory
     ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
 
-    # ssl key exchanges
+    # SSL Key exchanges
     ssl_protocols TLSv1.2;
     ssl_ecdh_curve secp384r1;
     ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
     ssl_prefer_server_ciphers on;
 
-    # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them
+    # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them for faster handshake
     ssl_stapling on;
     ssl_stapling_verify on;
+    # DNS Resolver - to lookup your upstream domain name URL
+    resolver 8.8.8.8 1.1.1.1 valid=300s ipv6=off;
+    resolver_timeout 10s;
 
     # Security Header
-    add_header Pragma no-cache;
     add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
     add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
     add_header Referrer-Policy no-referrer, strict-origin-when-cross-origin;
@@ -1487,35 +1469,50 @@ server {
     add_header X-Frame-Options SAMEORIGIN;
     add_header X-XSS-Protection "1; mode=block";
     add_header Content-Security-Policy upgrade-insecure-requests;
-    # Please add you own resource to this custom CSP!! and delete the line upper.
-    #add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://www.google-analytics.com https://www.gstatic.com/ https://www.google.com/recaptcha/; img-src 'self' data: https://www.google-analytics.com https://www.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com https://www.google.com/recaptcha/; font-src 'self'; child-src https://www.gstatic.com https://www.facebook.com https://s-static.ak.facebook.com; frame-src https://www.google.com/recaptcha/; object-src 'none';";
-
-    # Google DNS to resolve domain
-    resolver 8.8.8.8 8.8.4.4 valid=360s ipv6=off;
-    resolver_timeout 5s;
+    # Please add you own resource domain to this custom CSP!! and delete the line upper.
+    # add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ssl.google-analytics.com https://connect.facebook.net; img-src 'self' https://ssl.google-analytics.com https://s-static.ak.facebook.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://themes.googleusercontent.com; frame-src https://www.facebook.com https://s-static.ak.facebook.com; object-src 'none'";
 }
-```
-Read more about configuration https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
-#6. Enable config file 
+    # Public Key Pinning Extension for HTTP (HPKP) 
+    # https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning
+    # to generate use one of these:  
+    # $ openssl rsa -in my-website.key -outform der -pubout | openssl dgst -sha256 -binary | base64
+    # $ openssl req -in my-website.csr -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64
+    # $ openssl x509 -in my-website.crt -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64
+    # add_header Public-Key-Pins 'pin-sha256="base64+info1="; max-age=31536000; includeSubDomains'; 
+```
+
+TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
+ 
+Reference: Best nginx configuration for improved security(and performance). from https://gist.github.com/plentz/6737338
+Read more about configuration: https://mozilla.github.io/server-side-tls/ssl-config-generator/
+
+6. Enable config file 
 
 ```
 cd /etc/nginx/sites-enabled/
 ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
 ```
 
-#7. Save and test nginx config then restart nginx service
+7. Save and test nginx config then restart nginx service
 
 ```
 nginx -t
 systemctl restart nginx.service
 ```
 
-#8. Test the result
+8. Test your website SSL
 
 https://www.ssllabs.com/
 https://observatory.mozilla.org/
 
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/setup-webserver-centos7/12a2c363/ssllab_result_.png" alt="SSLLAB_result"/>
+</p>
+
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/setup-webserver-centos7/12a2c363/handshake_result.png" alt="handshake_Result"/>
+</p>
 
 Read more about 7 Tips for Faster HTTP/2 Performance
 https://www.nginx.com/blog/7-tips-for-faster-http2-performance/
