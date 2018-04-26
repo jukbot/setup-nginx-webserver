@@ -1449,7 +1449,7 @@ server {
     ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
 
     # SSL Key exchanges
-    ssl_protocols TLSv1.2;
+    ssl_protocols TLSv1.2 TLSv1.3; # !! TLS 1.3 Requires nginx >= 1.13.0 !!
     ssl_ecdh_curve secp384r1;
     ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
     ssl_prefer_server_ciphers on;
@@ -1457,11 +1457,13 @@ server {
     # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them for faster handshake
     ssl_stapling on;
     ssl_stapling_verify on;
+    
     # DNS Resolver - to lookup your upstream domain name URL
     resolver 8.8.8.8 1.1.1.1 valid=300s ipv6=off;
     resolver_timeout 10s;
 
     # Security Header
+    add_header X-Robots-Tag none; 
     add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
     add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
     add_header Referrer-Policy no-referrer, strict-origin-when-cross-origin;
