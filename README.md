@@ -20,7 +20,6 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 - Added support for the Application-Layer Protocol Negotiation (ALPN). -- YESSSSSSS!!!
 - Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
 
-Reference from https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/7.4_release_notes/index
 ```
 
 ## Introduction
@@ -32,7 +31,7 @@ The new CentOS 7 server has to be customized before it can be put into use as a 
 
 | CPU Architecture Name | Market Name | 
 |---------|---------------|
-| x86_64 | Intel 6 | 
+| x86_64 | Intel 64 | 
 | ppc64le | PowerPC 
 
 
@@ -65,7 +64,7 @@ The root user is the administrative user in a Linux environment that has very br
 The next step is to set up an alternative user account with a reduced scope of influence for day-to-day work. We'll teach you how to gain increased privileges during the times when you need them.
 
 
-## Setup and Initial
+## Setup and Initial Server
 
 ### Step 1 — Create a New User
 
@@ -127,7 +126,7 @@ The next step is to adjust the localization settings for your server and configu
 
 The first step will ensure that your server is operating under the correct time zone. The second step will configure your system to synchronize its system clock to the standard time maintained by a global network of NTP servers. This will help prevent some inconsistent behavior that can arise from out-of-sync clocks.
 
-#### Configure Timezones
+#### 3.1 Configure Timezones
 
 Our first step is to set our server's timezone. This is a very simple procedure that can be accomplished using the timedatectl command:
 
@@ -155,7 +154,7 @@ Your system will be updated to use the selected timezone. You can confirm this b
 sudo timedatectl
 ```
 
-#### Configure NTP Synchronization
+#### 3.2 Configure NTP Synchronization
 
 Now that you have your timezone set, we should configure NTP. This will allow your computer to stay in sync with other servers, leading to more predictability in operations that rely on having the correct time.
 
@@ -170,7 +169,7 @@ sudo systemctl enable ntpd
 ```
 Your server will now automatically correct its system clock to align with the global servers.
 
-#### How do I see the current time zone?
+#### 3.3 How do I see the current time zone?
 
 Type the date command or the ls command:
 ```
@@ -178,7 +177,73 @@ date
 ls -l /etc/localtime
 ```
 
-### Step 4 - Enable the IPTables Firewall (Recommended)
+### Step 4 - Set Up FirewallD (Optional)
+
+After setting up the bare minimum configuration for a new server, there are some additional steps that are highly recommended in most cases.
+
+#### Prerequisites
+
+In this guide, we will be focusing on configuring some optional but recommended components. This will involve setting our system up with a firewall and a swap file.
+
+#### Configuring a Basic Firewall
+
+Firewalls provide a basic level of security for your server. These applications are responsible for denying traffic to every port on your server with exceptions for ports/services you have approved. CentOS ships with a firewall called firewalld. A tool called firewall-cmd can be used to configure your firewall policies. Our basic strategy will be to lock down everything that we do not have a good reason to keep open.
+
+The firewalld service has the ability to make modifications without dropping current connections, so we can turn it on before creating our exceptions:
+```
+sudo systemctl start firewalld
+```
+Now that the service is up and running, we can use the firewall-cmd utility to get and set policy information for the firewall. The firewalld application uses the concept of "zones" to label the trustworthiness of the other hosts on a network. This labelling gives us the ability to assign different rules depending on how much we trust a network.
+
+In this guide, we will only be adjusting the policies for the default zone. When we reload our firewall, this will be the zone applied to our interfaces. We should start by adding exceptions to our firewall for approved services. The most essential of these is SSH, since we need to retain remote administrative access to the server.
+
+You can enable the service by name (eg ssh-daemon) (MUST ENABLE) by typing:
+```
+sudo firewall-cmd --permanent --add-service=ssh
+```
+or disable it by typing:
+```
+sudo firewall-cmd --permanent --remove-service=ssh
+```
+or enable custom port by typing:
+```
+sudo firewall-cmd --permanent --add-port=4200/tcp
+```
+
+This is the bare minimum needed to retain administrative access to the server. If you plan on running additional services, you need to open the firewall for those as well.
+
+If you plan to run a web server with SSL/TLS enabled, you should allow traffic for https as well:
+
+```
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+
+```
+If you need SMTP email enabled, you can type:
+```
+sudo firewall-cmd --permanent --add-service=smtp
+```
+To see any additional services that you can enable by name, type:
+```
+sudo firewall-cmd --get-services
+```
+When you are finished, you can see the list of the exceptions that will be implemented by typing:
+```
+sudo firewall-cmd --permanent --list-all
+```
+When you are ready to implement the changes, reload the firewall:
+```
+sudo firewall-cmd --reload
+```
+If, after testing, everything works as expected, you should make sure the firewall will be started at boot:
+```
+sudo systemctl enable firewalld
+```
+
+Remember that you will have to explicitly open the firewall (with services or ports) for any additional services that you may configure later.
+
+
+### Step 5 - Enable the IPTables Firewall (Optional for advanced)
 
 By default, the active firewall application on a newly activated CentOS 7 server is FirewallD. Though it is a good replacement for IPTables, many security applications still do not have support for it. So if you'll be using any of those applications, like OSSEC HIDS, it's best to disable/uninstall FirewallD.
 
@@ -353,7 +418,6 @@ net.ipv4.tcp_tw_reuse = 1
 net.ipv6.conf.all.disable_ipv6= 1
 ```
 
-Reference: https://www.nginx.com/resources/wiki/start/topics/examples/SSL-Offloader/
 
 3. Reload the systemctl file
 ```
@@ -385,7 +449,7 @@ sudo yum -y install yum-utils
 
 Read more about yum-utils 
 https://www.if-not-true-then-false.com/2012/delete-remove-old-kernels-on-fedora-centos-red-hat-rhel/
-http://www.tecmint.com/linux-yum-package-management-with-yum-utils/
+https://www.tecmint.com/linux-yum-package-management-with-yum-utils/
 
 ### 2 Extra Packages for Enterprise Linux (EPEL)
 
@@ -469,7 +533,7 @@ In CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.
 - Added support for the Application-Layer Protocol Negotiation (ALPN). 
 - Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
 
-Reference from https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/7.4_release_notes/index
+According from https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/7.4_release_notes/index
 ```
 
 To update your linux kernel just use command
@@ -733,7 +797,7 @@ Then edit nginx repository meta by add the following lines to nginx.repo:
 ```
 [nginx]
 name=nginx repo
-baseurl=http://nginx.org/packages/centos/7/$basearch/
+baseurl=https://nginx.org/packages/centos/7/$basearch/
 gpgcheck=0
 enabled=1
 ```
@@ -1485,8 +1549,7 @@ server {
 ```
 
 TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
- 
-Reference: Best nginx configuration for improved security(and performance). from https://gist.github.com/plentz/6737338
+
 Read more about configuration: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
 6. Enable config file 
@@ -1506,6 +1569,7 @@ systemctl restart nginx.service
 8. Test your website SSL
 
 https://www.ssllabs.com/
+
 https://observatory.mozilla.org/
 
 <p align="center">
@@ -1520,68 +1584,83 @@ Read more about 7 Tips for Faster HTTP/2 Performance
 https://www.nginx.com/blog/7-tips-for-faster-http2-performance/
 
 
-## Set Up FirewallD
+### Step 5: Config SELinux to allow nginx process (FOR ENHANCED SECURITY)
 
-### Introduction
+<p align="center">
+    <img src="https://github.com/jukbot/setup-webserver-centos7/blob/master/selinux_diagram.png" alt="SELinux_diagram"/>
+</p>
+ 
+ 
+#### Introduction
 
-After setting up the bare minimum configuration for a new server, there are some additional steps that are highly recommended in most cases.
+Security Enhanced Linux or SELinux is an advanced access control mechanism built into most modern Linux distributions. 
+Many system administrators find SELinux a somewhat uncharted territory. The topic can seem daunting and at times quite confusing. 
 
-### Prerequisites
+However, a properly configured SELinux system can greatly reduce security risks, and knowing a bit about it can help you troubleshoot access-related error messages. In this section we will guide the basic config of SELinux for Nginx process
+We will also see a few practical instances of putting SELinux in action.
 
-In this guide, we will be focusing on configuring some optional but recommended components. This will involve setting our system up with a firewall and a swap file.
+#### SELinux Modes
+First off, a quick overview of the three different SELinux modes. SELinux can be in enforcing, permissive, or disabled mode.
 
-### Configuring a Basic Firewall
+| Policy Mode | Detail | 
+|---------|---------------|
+| Enforcing | This is the default. In enforcing mode, if something happens on the system that is against the defined policy, the action will be both blocked and logged. |
+| Permissive | This mode will not actually block or deny anything from happening, however it will log anything that would have normally been blocked in enforcing mode. It’s a good mode to use if you perhaps want to test a Linux system that has never used SELinux and you want to get an idea of any problems you may have. No system reboot is needed when swapping between permissive and enforcing modes. |
+| Disabled | Disabled is completely turned off, nothing is logged at all. In order to swap to the disabled mode, a system reboot will be required. Additionally if you are switching from disabled mode to either permissive or enforcing modes a system reboot will also be required. |
 
-Firewalls provide a basic level of security for your server. These applications are responsible for denying traffic to every port on your server with exceptions for ports/services you have approved. CentOS ships with a firewall called firewalld. A tool called firewall-cmd can be used to configure your firewall policies. Our basic strategy will be to lock down everything that we do not have a good reason to keep open.
+#### View current SELinux Status 
 
-The firewalld service has the ability to make modifications without dropping current connections, so we can turn it on before creating our exceptions:
-```
-sudo systemctl start firewalld
-```
-Now that the service is up and running, we can use the firewall-cmd utility to get and set policy information for the firewall. The firewalld application uses the concept of "zones" to label the trustworthiness of the other hosts on a network. This labelling gives us the ability to assign different rules depending on how much we trust a network.
+CentOS/RHEL use SELinux in enforcing mode by default, there are a few ways that we can check and confirm this. 
 
-In this guide, we will only be adjusting the policies for the default zone. When we reload our firewall, this will be the zone applied to our interfaces. We should start by adding exceptions to our firewall for approved services. The most essential of these is SSH, since we need to retain remote administrative access to the server.
+Run command sestatus to view current SELinux mode
 
-You can enable the service by name (eg ssh-daemon) by typing:
 ```
-sudo firewall-cmd --permanent --add-service=ssh
-```
-or disable it by typing:
-```
-sudo firewall-cmd --permanent --remove-service=ssh
-```
-or enable custom port by typing:
-```
-sudo firewall-cmd --permanent --add-port=4200/tcp
-```
-This is the bare minimum needed to retain administrative access to the server. If you plan on running additional services, you need to open the firewall for those as well.
+$ sestatus
+SELinux status:                 enabled
+SELinuxfs mount:                /sys/fs/selinux
+SELinux root directory:         /etc/selinux
+Loaded policy name:             targeted
+Current mode:                   enforcing
+Mode from config file:          enforcing
+Policy MLS status:              enabled
+Policy deny_unknown status:     allowed
+Max kernel policy version:      28
+````
 
-If you plan on running a conventional HTTP web server, you will need to enable the http service:
+As shown above both of these show that we are currently in enforcing mode.
+
+Note: SELinux is incredibly valuable as part of an overall Linux system security strategy, and we recommend leaving it enabled in enforcing mode in production environments where possible. If a particular application or package does not work properly with SELinux customized allowances can be made which is the preferred option compared to simply disabling the whole thing.
+
+#### Let's config our policy
+
+In this section, we will be running the commands as the root user unless otherwise stated. If you don't have access to the root account and use another account with sudo privileges, you need to precede the commands with the sudo keyword.
+
+1. First, we'll install selinux manager
+
 ```
-sudo firewall-cmd --permanent --add-service=http
+sudo yum install policycoreutils-python
 ```
-If you plan to run a web server with SSL/TLS enabled, you should allow traffic for https as well:
+
+By default, web server will not have permision to connect to socket directly, in this case if we want to use it as reverse proxy but SELinux not allow to use socket. 
+
+Most people will disable SELinux policy to fix this issue. In the worst case if other application that not Nginx has been hacked from backdoor the SELinux will keep log and process report. Which you can view using audit2allow as follow: 
+
+2. Export audit of nginx process and export as policy package (.pp) file
 ```
-sudo firewall-cmd --permanent --add-service=https
+sudo cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -m nginxlocalconf > nginxlocalconf.pp
 ```
-If you need SMTP email enabled, you can type:
+
+3. Then install our exported policy package by command
 ```
-sudo firewall-cmd --permanent --add-service=smtp
+semodule -i nginxlocalconf.pp
 ```
-To see any additional services that you can enable by name, type:
-```
-sudo firewall-cmd --get-services
-```
-When you are finished, you can see the list of the exceptions that will be implemented by typing:
-```
-sudo firewall-cmd --permanent --list-all
-```
-When you are ready to implement the changes, reload the firewall:
-```
-sudo firewall-cmd --reload
-```
-If, after testing, everything works as expected, you should make sure the firewall will be started at boot:
-```
-sudo systemctl enable firewalld
-```
-Remember that you will have to explicitly open the firewall (with services or ports) for any additional services that you may configure later.
+
+4. Done, after installed this will append to default system policy in SELinux. Which allow nginx to access the socket safely.
+
+Reference: 
+- https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/
+- https://gist.github.com/plentz/6737338
+- https://www.digitalocean.com/community/tutorial_series/an-introduction-to-selinux-on-centos-7
+- https://www.rootusers.com/how-to-enable-or-disable-selinux-in-centos-rhel-7/
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/7.4_release_notes/index
+- https://www.nginx.com/resources/wiki/start/topics/examples/SSL-Offloader/
