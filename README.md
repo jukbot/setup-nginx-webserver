@@ -323,7 +323,7 @@ sudo vi /etc/sysctl.conf
 ```
 
 2. Edit file as following configuration
-```
+```Ini
 # Increase number of incoming connections
 net.core.somaxconn = 250000
 
@@ -561,7 +561,7 @@ yum info openssl
 ```
 
 1). Download the latest version of OpenSSL and generate the config, as follows:
-```
+```shell
 cd /usr/local/src/
 wget https://www.openssl.org/source/openssl-1.1.0-latest.tar.gz
 tar -zxf openssl-1.1.0-latest.tar.gz
@@ -784,9 +784,8 @@ Both the NGINX Open Source mainline and stable versions can be installed in two 
 -------------------------------------------------------------------------------------------------------------------------
 
 ### METHOD 1: Prebuilt binary package
-=======================
 
-### Step 1 Set up the yum repository for RHEL/CentOS 
+#### Step 1 Set up the yum repository for RHEL/CentOS 
 
 Creating the file nginx.repo in /etc/yum.repos.d, for example using vi:
 ```
@@ -794,7 +793,7 @@ sudo vi /etc/yum.repos.d/nginx.repo
 ```
 
 Then edit nginx repository meta by add the following lines to nginx.repo: 
-```
+```Ini
 [nginx]
 name=nginx repo
 baseurl=https://nginx.org/packages/centos/7/$basearch/
@@ -806,7 +805,7 @@ Save the config by ESC -> :x to save and exit the editor
 Note: If you're using RedHat just change os name from `centos` to `rhel` 
 
 
-### STEP 2 Update the repository, install and start NGINX OSS package:
+#### Step 2 Update the repository, install and start NGINX OSS package:
 ```
 sudo yum update
 sudo yum install nginx
@@ -814,17 +813,17 @@ sudo nginx
 ```
 
 
-### Step 3 Verify the installation and service status:
+#### Step 3 Verify the installation and service status:
 ```
 sudo nginx -V
 sudo systemctl status nginx
 ```
 
+-------------------------------------------------------------------------------------------------------------------------
 
 ### METHOD 2: Compile from source (If you want to install custom nginx modules)
-=======================
 
-### Step 1 Install compiler and libraries
+#### Step 1 Install compiler and build tools
 
 To compile nginx from source you need to install compiler and required libraries to build nginx.
 ```
@@ -832,7 +831,7 @@ sudo yum groupinstall 'Development Tools'
 sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
 ```
 
-### Step 2 Installing NGINX Dependencies
+#### Step 2 Install NGINX Dependencies
 
 Prior to compiling NGINX from the sources, it is necessary to install its dependencies:
 
@@ -866,7 +865,7 @@ sudo make install
 Please see the OpenSSL section
 
 
-### Step 3 Download NGINX source code
+#### Step 3 Download source code
 ```
 cd /usr/local/src
 wget http://nginx.org/download/nginx-1.14.0.tar.gz
@@ -876,9 +875,10 @@ cd nginx-1.14.0
 
 Mainline version please see https://nginx.org/en/download.html
 
-3.1 Config the nginx for built
 
-#### NGINX Compile configure detail (TL;DR - Just explain the duty of each packages, can skip to next section)
+#### Step 4 Config source code
+
+**NGINX Compile configure detail (TL;DR - Just explain the duty of each packages, can skip to next section)**
 
 First, we'll set prefix to /etc/nginx for our nginx installation path. 
 
@@ -974,9 +974,9 @@ NOTE!! Please change the library version to your current library path version. F
 --with-openssl=/usr/local/src/openssl-1.1.0x \
 ```
 
-Run the nginx config
+3.1 Run the nginx config
 
-```
+```shell
 ./configure \
 --prefix=/etc/nginx \
 --sbin-path=/usr/sbin/nginx \
@@ -1024,27 +1024,27 @@ Run the nginx config
 --add-module=/usr/local/src/ngx_brotli 
 ```
 
-Then Compile and install the build:
+3.2 Then Compile and install the build:
 ```
 sudo make && sudo make install
 ```
 
-3.2 (FOR SECURITY) Create nginx user and config firewall
+3.3 (FOR SECURITY) Create nginx user for running nginx service
 
-After the installation process has finished with success add nginx system user (with /etc/nginx/ as his home directory and with no valid shell), the user that Nginx will run as by issuing the following command.
+After the installation process has finished with success, add nginx system user (with /etc/nginx/ as his home directory and with no valid shell), the user that Nginx will run as by issuing the following command.
 ```
 useradd -d /etc/nginx/ -s /sbin/nologin nginx
 ```
 
-Change user in nginx configure file
-```
+Then, change user in nginx configure file to nginx user
+```Ini
 vi /etc/nginx/nginx.conf
 # Then change the user from nobody to nginx, then save and exit.
 
 user nginx;
 ```
 
-Config the firewall to allow http connection
+3.4 (FOR SECURITY) Config the firewall to allow http connnection
 ```
 systemctl enable firewalld.service
 firewall-cmd --permanent --zone=public --add-service=http
@@ -1052,12 +1052,12 @@ firewall-cmd --permanent --zone=public --add-service=https
 systemctl restart firewalld.service
 ```
 
-3.3 Start nginx service by using below command
+3.5 Start nginx service by using below command
 ```
 /usr/sbin/nginx -c /etc/nginx/nginx.conf
 ```
 
-3.4 (OPTIONAL) Check nginx process 
+Check nginx process 
 ```
 ps -ef|grep nginx
 ```
@@ -1067,7 +1067,7 @@ To stop nginx service using below command
 kill -9 PID-Of-Nginx
 ```
 
-3.5 (DO ONLY ONCE)* Add nginx as systemd service 
+3.6 (DO ONLY ONCE)* Add nginx as systemd service 
 
 Create a file "nginx.service" in /lib/systemd/system/nginx.service 
 ```
@@ -1075,7 +1075,7 @@ sudo vi /lib/systemd/system/nginx.service
 ```
 
 Then copy below into the file and save
-```text
+```Ini
 [Unit]
 Description=The nginx HTTP and reverse proxy server
 After=syslog.target network.target remote-fs.target nss-lookup.target
@@ -1094,18 +1094,18 @@ WantedBy=multi-user.target
 ~                             
  ```
  
-3.6 (DO ONLY ONCE)* Reload the system files
+Reload the system files
 ```
 systemctl daemon-reload
 ```
 
 3.7 (DO ONLY ONCE)* Create startup script for automatic start nginx service
-```
+```text
 sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
-sudo nano /etc/init.d/nginx then copy script below
+sudo vi /etc/init.d/nginx then copy script below
 ```
 
-```shell
+```bash
 #!/bin/sh
 #
 # nginx - this script starts and stops the nginx daemon
@@ -1539,18 +1539,19 @@ server {
     # add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ssl.google-analytics.com https://connect.facebook.net; img-src 'self' https://ssl.google-analytics.com https://s-static.ak.facebook.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://themes.googleusercontent.com; frame-src https://www.facebook.com https://s-static.ak.facebook.com; object-src 'none'";
 }
 
-    # Public Key Pinning Extension for HTTP (HPKP) 
-    # https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning
-    # to generate use one of these:  
+    # Public Key Pinning Extension for HTTP (HPKP) - OPTIONAL
+    # to generate use one of these and put base64 text in pin-sha256:  
     # $ openssl rsa -in my-website.key -outform der -pubout | openssl dgst -sha256 -binary | base64
     # $ openssl req -in my-website.csr -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64
-    # $ openssl x509 -in my-website.crt -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | base64
-    # add_header Public-Key-Pins 'pin-sha256="base64+info1="; max-age=31536000; includeSubDomains'; 
+    add_header Public-Key-Pins 'pin-sha256="<base64+primary==>"; pin-sha256="<base64+backup==>"; max-age=31536000; includeSubDomains'; 
 ```
+
+!!! In order to generate base64 for backup key, you need to generate a backup certificates set from CA. !!!
+LEARN MORE: about HPKP: https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning
+LEARN MORE: about configuration: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
 TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
 
-Read more about configuration: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
 6. Enable config file 
 
@@ -1614,7 +1615,7 @@ CentOS/RHEL use SELinux in enforcing mode by default, there are a few ways that 
 
 Run command sestatus to view current SELinux mode
 
-```
+```shell
 $ sestatus
 SELinux status:                 enabled
 SELinuxfs mount:                /sys/fs/selinux
