@@ -830,7 +830,7 @@ sudo systemctl status nginx
 
 ### METHOD 2: Compile from source (If you want to install custom nginx modules)
 
-#### Step 1 Install compiler and build tools
+#### Step 1 - Install Compiler and build tools
 
 To compile nginx from source you need to install compiler and required libraries to build nginx.
 ```
@@ -838,11 +838,23 @@ sudo yum groupinstall 'Development Tools'
 sudo yum -y install autoconf automake bind-utils wget curl unzip gcc-c++ pcre-devel zlib-devel libtool make nmap-netcat ntp pam-devel
 ```
 
-#### Step 2 Install NGINX Dependencies
+#### Step 2 - Download NGINX Source Code
+
+```
+cd /usr/local/src
+wget http://nginx.org/download/nginx-1.14.0.tar.gz
+tar zxf nginx-1.14.0.tar.gz
+cd nginx-1.14.0
+```
+
+Mainline version please see https://nginx.org/en/download.html
+
+
+#### Step 3 - Install NGINX Dependencies
 
 Prior to compiling NGINX from the sources, it is necessary to install its dependencies:
 
-2.1 PCRE library (March 3, 2018)
+PCRE library (March 3, 2018)
 - The PCRE library required by NGINX Core and Rewrite modules and provides support for regular expressions:
 ```
 cd /usr/local/src
@@ -854,7 +866,7 @@ make
 sudo make install
 ```
 
-2.2 ZLIB library (January 15, 2017)
+ZLIB library (January 15, 2017)
 - The zlib library required by NGINX Gzip module for headers compression:
 ```
 cd /usr/local/src
@@ -866,21 +878,9 @@ make
 sudo make install
 ```
 
-2.3 OpenSSL library (lastest or >= 1.0.2)
+OpenSSL library (lastest or >= 1.0.2)
 - The OpenSSL library required by NGINX SSL modules to support the HTTPS protocol:
-
-Please see the OpenSSL section
-
-
-#### Step 3 Download source code
-```
-cd /usr/local/src
-wget http://nginx.org/download/nginx-1.14.0.tar.gz
-tar zxf nginx-1.14.0.tar.gz
-cd nginx-1.14.0
-```
-
-Mainline version please see https://nginx.org/en/download.html
+- Please see the OpenSSL section
 
 
 #### Step 4 Config source code
@@ -981,7 +981,7 @@ NOTE!! Please change the library version to your current library path version. F
 --with-openssl=/usr/local/src/openssl-1.1.0x \
 ```
 
-3.1 Run the nginx config
+4.1 Run the nginx config
 
 ```shell
 ./configure \
@@ -1031,12 +1031,12 @@ NOTE!! Please change the library version to your current library path version. F
 --add-module=/usr/local/src/ngx_brotli 
 ```
 
-3.2 Then Compile and install the build:
+4.2 Then Compile and install the build:
 ```
 sudo make && sudo make install
 ```
 
-3.3 (FOR SECURITY) Create nginx user for running nginx service
+4.3 (FOR SECURITY) Create nginx user for running nginx service
 
 After the installation process has finished with success, add nginx system user (with /etc/nginx/ as his home directory and with no valid shell), the user that Nginx will run as by issuing the following command.
 ```
@@ -1051,7 +1051,7 @@ vi /etc/nginx/nginx.conf
 user nginx;
 ```
 
-3.4 (FOR SECURITY) Config the firewall to allow http connnection
+4.4 (FOR SECURITY) Config the firewall to allow http connnection
 ```
 systemctl enable firewalld.service
 firewall-cmd --permanent --zone=public --add-service=http
@@ -1059,7 +1059,7 @@ firewall-cmd --permanent --zone=public --add-service=https
 systemctl restart firewalld.service
 ```
 
-3.5 Start nginx service by using below command
+4.5 Start nginx service by using below command
 ```
 /usr/sbin/nginx -c /etc/nginx/nginx.conf
 ```
@@ -1074,7 +1074,7 @@ To stop nginx service using below command
 kill -9 PID-Of-Nginx
 ```
 
-3.6 (DO ONLY ONCE)* Add nginx as systemd service 
+4.6 (DO ONLY ONCE)* Add nginx as systemd service 
 
 Create a file "nginx.service" in /lib/systemd/system/nginx.service 
 ```
@@ -1101,12 +1101,12 @@ WantedBy=multi-user.target
 ~                             
  ```
  
-Reload the system files
+Then reload the system files
 ```
 systemctl daemon-reload
 ```
 
-3.7 (DO ONLY ONCE)* Create startup script for automatic start nginx service
+4.7 (DO ONLY ONCE)* Create startup script for automatic start nginx service
 ```text
 sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 sudo vi /etc/init.d/nginx then copy script below
@@ -1244,24 +1244,24 @@ case "$1" in
 esac
 ```
 
-3.8 (DO ONLY ONCE)* Set permission to make this script be executable 
+4.8 (DO ONLY ONCE)* Set permission to make this script be executable 
 ```
 chmod +x /etc/init.d/nginx
 sudo systemctl enable nginx
 ```
 
-3.9 (DO ONLY ONCE)* To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
+4.9 (DO ONLY ONCE)* To make sure that Nginx starts and stops every time with the Droplet, add it to the default runlevels with the command:
 ```
 sudo chkconfig nginx on
 sudo service nginx restart
 ```
 
-3.10 Finally, to verify nginx version and opensssl that built by type
+4.10 Finally, to verify nginx version and opensssl that built by type
 ```
 nginx -V
 ```
 
-3.11 Start nginx 
+4.11 Start nginx 
 ```
 sudo systemctl start nginx
 ```
@@ -1280,19 +1280,18 @@ sudo touch /var/cache/nginx/client_temp
 *DO ONLY ONCE mean if you build newer version of nginx and have done these steps before, you can skip these
 
 
-### Step 4 Setup Nginx web server (SSL + HTTP2)
+#### Step 5 Setup NGINX Web Server 
 
 For using http2 you need to have certificate (SSL) installed
 
-1. Go to nginx global file directory
+5.1 Go to nginx global file directory
 
 ```
-sudo su
 cd /etc/nginx/
-vi nginx.conf
+sudo vi nginx.conf
 ```
 
-2. Config the file as below 
+5.2 Config the file as below 
 
 ```nginx
 user  nginx;
@@ -1408,21 +1407,21 @@ http {
 }
 ```
 
-3. Save and test nginx config then restart nginx service
+5.3 Save and test nginx config then restart nginx service
 
 ```
 nginx -t
 systemctl restart nginx.service
 ```
 
-4. Go to sites-available and create the following file to build a block hosting
+5.4 Go to sites-available and create the following file to build a block hosting
 
 ```
 cd sites-available/
 vi <domainname>.conf
 ```
 
-5. Config file as below
+5.5 Config file as below
 
 ```nginx
 server {
@@ -1560,21 +1559,20 @@ LEARN MORE: about configuration: https://mozilla.github.io/server-side-tls/ssl-c
 TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
 
 
-6. Enable config file 
+5.6 Enable config file 
 
 ```
 cd /etc/nginx/sites-enabled/
 ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
 ```
 
-7. Save and test nginx config then restart nginx service
-
+5.7 Save and test nginx config then restart nginx service
 ```
 nginx -t
 systemctl restart nginx.service
 ```
 
-8. Test your website SSL
+5.8 Test your website SSL
 
 https://www.ssllabs.com/
 
@@ -1592,7 +1590,7 @@ Read more about 7 Tips for Faster HTTP/2 Performance
 https://www.nginx.com/blog/7-tips-for-faster-http2-performance/
 
 
-### Step 5: Config SELinux to allow nginx process (FOR ENHANCED SECURITY)
+#### Step 6: Config SELinux to allow NGINX process (FOR ENHANCED SECURITY)
 
 <p align="center">
     <img src="https://github.com/jukbot/setup-webserver-centos7/blob/master/selinux_diagram.png" alt="SELinux_diagram"/>
@@ -1643,8 +1641,7 @@ Note: SELinux is incredibly valuable as part of an overall Linux system security
 
 In this section, we will be running the commands as the root user unless otherwise stated. If you don't have access to the root account and use another account with sudo privileges, you need to precede the commands with the sudo keyword.
 
-1. First, we'll install selinux manager
-
+6.1 First, we'll install selinux manager
 ```
 sudo yum install policycoreutils-python
 ```
@@ -1653,17 +1650,17 @@ By default, web server will not have permision to connect to socket directly, in
 
 Most people will disable SELinux policy to fix this issue. In the worst case if other application that not Nginx has been hacked from backdoor the SELinux will keep log and process report. Which you can view using audit2allow as follow: 
 
-2. Export audit of nginx process and export as policy package (.pp) file
+6.2 Export audit of nginx process and export as policy package (.pp) file
 ```
 sudo cat /var/log/audit/audit.log | grep nginx | grep denied | audit2allow -m nginxlocalconf > nginxlocalconf.pp
 ```
 
-3. Then install our exported policy package by command
+6.3 Then install our exported policy package by command
 ```
 semodule -i nginxlocalconf.pp
 ```
 
-4. Done, after installed this will append to default system policy in SELinux. Which allow nginx to access the socket safely.
+Done, after installed this will append to default system policy in SELinux. Which allow nginx to access the socket safely.
 
 Reference: 
 - https://docs.nginx.com/nginx/admin-guide/installing-nginx/installing-nginx-open-source/
