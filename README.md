@@ -10,8 +10,6 @@ Because most of these linux branches have a long term support, f_cking stable an
 However, most libraries and applications that preinstalled are obsolete. 
 So this article will guide you STEP BY STEP to build a perfect web server with understanding.
 
-Please read: This article **compatible with RedHat Enterprise Linux 7.x**, except some repository links need to change upon vendors and processor architecture of your hardware.
-
 **ANNOUCEMENT**
 ```
 CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2k, which provides a number of enhancements, new features, and bug fixes, including:
@@ -19,12 +17,28 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 - Added support for the automatic elliptic curve selection for the ECDHE key exchange in TLS.
 - Added support for the Application-Layer Protocol Negotiation (ALPN). -- YESSSSSSS!!!
 - Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
-
 ```
+
+## Table of Contents  
+- [Introduction](#introduction)
+- [Support Architecture](#support-architecture)
+- [Prerequisites](#prerequisites)
+- [Setup and Initial Server](#setup-and-initial-server)
+- [Update and Upgrade](#update-and-upgrade)
+- [Install Common Packages](#install-common-packages)
+  * [1 Yum Utils](#1-yum-utils)
+  * [2 Extra Packages for Enterprise Linux (EPEL)](#2-extra-packages-for-enterprise-linux--epel-)
+  * [3 OpenSSL (with ALPN support)](#3-openssl--with-alpn-support-)
+  * [4 Nginx](#4-nginx)
+    + [METHOD 1: Prebuilt binary package](#method-1--prebuilt-binary-package)
+    + [METHOD 2: Compile from source (If you want to install custom nginx modules)](#method-2--compile-from-source--if-you-want-to-install-custom-nginx-modules-)
+
 
 ## Introduction
 
 The new CentOS 7 server has to be customized before it can be put into use as a production system. In this article, will help you to increase the security and usability of your server with the lastest stable packages and will give you a solid foundation for subsequent actions.
+
+This article **compatible with RedHat Enterprise Linux 7.x**, except some repository links need to change upon vendors and processor architecture of your hardware.
 
 
 ## Support Architecture
@@ -541,7 +555,7 @@ To update your linux kernel just use command
 sudo yum upgrade
 ```
 
-### The following steps describe how to upgrade OpenSSL to the latest version 
+**The following steps describe how to upgrade OpenSSL to the latest version**
 
 Prerequired: To compile openssl from source you need to install compiler and required libraries to build nginx.
 ```
