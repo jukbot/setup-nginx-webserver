@@ -981,7 +981,8 @@ NOTE!! Please change the library version to your current library path version. F
 --with-openssl=/usr/local/src/openssl-1.1.0x \
 ```
 
-4.1 Run the nginx config
+4.1 Run the nginx config 
+(!! REMOVE THE LAST LINE, IF YOU DON'T WANT BROTLI MODULE, SEE BROTLI MODULE SECTION !!)
 
 ```shell
 ./configure \
