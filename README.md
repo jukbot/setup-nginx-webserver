@@ -21,14 +21,14 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 
 ## Table of Contents  
 - [Introduction](#introduction)
-- [Support Architecture](#support-architecture)
+- [Support Architectures](#support-architectures)
 - [Prerequisites](#prerequisites)
 - [Setup and Initial Server](#setup-and-initial-server)
 - [Update and Upgrade](#update-and-upgrade)
 - [Install Common Packages](#install-common-packages)
   * [1 Yum Utils](#1-yum-utils)
-  * [2 Extra Packages for Enterprise Linux (EPEL)](#2-extra-packages-for-enterprise-linux--epel-)
-  * [3 OpenSSL (with ALPN support)](#3-openssl--with-alpn-support-)
+  * [2 Extra Packages for Enterprise Linux (EPEL)](#2-extra-packages-for-enterprise-linux)
+  * [3 OpenSSL (with ALPN support)](#3-openssl)
   * [4 Nginx](#4-nginx)
     + [METHOD 1: Prebuilt binary package](#method-1--prebuilt-binary-package)
     + [METHOD 2: Compile from source (If you want to install custom nginx modules)](#method-2--compile-from-source--if-you-want-to-install-custom-nginx-modules-)
@@ -41,7 +41,7 @@ The new CentOS 7 server has to be customized before it can be put into use as a 
 This article **compatible with RedHat Enterprise Linux 7.x**, except some repository links need to change upon vendors and processor architecture of your hardware.
 
 
-## Support Architecture
+## Support Architectures
 
 | CPU Architecture Name | Market Name | 
 |---------|---------------|
@@ -505,7 +505,7 @@ And, there you have it, a larger number of packages to install from EPEL repo on
 Red Hat Enterprise Linux (RHEL) version 7.x.
 
 
-### 3 OpenSSL (with ALPN support)
+### 3 OpenSSL
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/OpenSSL-Logo.png" alt="OPENSSL"/>
