@@ -586,19 +586,26 @@ make install
 Recommended: 
 - This will take a while depending on your CPU capacity. If your CPU has more than 1 core you can added suffix -j4 for using 4 cores to compile the source code. For example: `make -j4` to use all 4 cores to compile the source code.
 
-3). Move old openssl installed version to the root folder for backup or you can delete it
+3). Move old openssl installed version to the root folder for backup or you can delete it (need root permission)
 ```
 mv /usr/bin/openssl /root/
 ```
 
-4). Create a symbolic link
+4). Create a symbolic link (need root permission)
 ```
 ln -s /usr/local/bin/openssl /usr/bin/openssl
 ```
 
-5). Verify the OpenSSL version 
+5). Update new lib64 to LD_LIBRARY path then apply the config
+```
+export LD_LIBRARY_PATH=/usr/local/lib:/usr/local/lib64
+ldconfig
+````
+
+6). Verify the OpenSSL version 
 ```
 openssl version
+OpenSSL 1.1.0h  27 Mar 2018
 ```
 
 
