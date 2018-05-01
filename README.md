@@ -19,6 +19,11 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 - Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
 ```
 
+**TODO NEXT**
+- Add guide for building nginx load balance
+- Add guide for implementing nginx unit
+- Add guide for wrapping custom nginx as docker image
+
 ## Table of Contents  
 - [Introduction](#introduction)
 - [Prerequisites](#prerequisites)
