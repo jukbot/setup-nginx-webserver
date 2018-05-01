@@ -1,5 +1,5 @@
-# Setup a Secure Nginx Web Server CentOS 7.x
-(Updated Apr 26, 2018)
+# Setup a Secure Nginx Web Server on CentOS/Redhat 7.x
+(Updated May 1, 2018)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -21,7 +21,6 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 
 ## Table of Contents  
 - [Introduction](#introduction)
-- [Support Architectures](#support-architectures)
 - [Prerequisites](#prerequisites)
 - [Setup and Initial Server](#setup-and-initial-server)
 - [Update and Upgrade](#update-and-upgrade)
@@ -39,14 +38,6 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 The new CentOS 7 server has to be customized before it can be put into use as a production system. In this article, will help you to increase the security and usability of your server with the lastest stable packages and will give you a solid foundation for subsequent actions.
 
 This article **compatible with RedHat Enterprise Linux 7.x**, except some repository links need to change upon vendors and processor architecture of your hardware.
-
-
-## Support Architectures
-
-| CPU Architecture Name | Market Name | 
-|---------|---------------|
-| x86_64 | Intel 64 | 
-| ppc64le | PowerPC 
 
 
 ## Prerequisites
@@ -134,7 +125,7 @@ Save and close the file. To apply the new settings, reload SSH.
 sudo systemctl reload sshd
 ```
 
-### Step 3 — Configure the Timezones and Network Time Protocol Synchronization
+### Step 3 - Configure the Timezones and Network Time Protocol Synchronization
 
 The next step is to adjust the localization settings for your server and configure the Network Time Protocol (NTP) synchronization.
 
@@ -261,27 +252,28 @@ Remember that you will have to explicitly open the firewall (with services or po
 
 By default, the active firewall application on a newly activated CentOS 7 server is FirewallD. Though it is a good replacement for IPTables, many security applications still do not have support for it. So if you'll be using any of those applications, like OSSEC HIDS, it's best to disable/uninstall FirewallD.
 
-Let's start by disabling/uninstalling FirewallD:
+5.1 Let's start by disabling/uninstalling FirewallD:
 ```
 sudo yum remove -y firewalld
 ```
-Now, let's install/activate IPTables.
 
+5.2 Now, let's install/activate IPTables.
 ```
 sudo yum install -y iptables-services
 sudo systemctl start iptables
 ```
 
-Configure IPTables to start automatically at boot time.
+5.3 Configure IPTables to start automatically at boot time.
 ```
 sudo systemctl enable iptables
 ```
+
 IPTables on CentOS 7 comes with a default set of rules, which you can view with the following command.
 ```
 sudo iptables -L -n
 ```
 The output will resemble:
-
+```
 Chain INPUT (policy ACCEPT)
 target     prot opt source               destination         
 ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0            state RELATED,ESTABLISHED
@@ -296,34 +288,40 @@ REJECT     all  --  0.0.0.0/0            0.0.0.0/0            reject-with icmp-h
 
 Chain OUTPUT (policy ACCEPT)
 target     prot opt source               destination
+```
 
 You can see that one of those rules allows SSH traffic, so your SSH session is safe.
 Because those rules are runtime rules and will be lost on reboot, it's best to save them to a file using:
+
 ```
 sudo /usr/libexec/iptables/iptables.init save
 ```
+
 That command will save the rules to the /etc/sysconfig/iptables file. You can edit the rules anytime by changing this file with your favorite text editor.
 
-### Step 5 - Allow Additional Traffic Through the Firewall
+#### Allow Additional Traffic Through the Firewall
 
-Since you'll most likely be going to use your new server to host some websites at some point, you'll have to add new rules to the firewall to allow HTTP and HTTPS traffic. To accomplish that, open the IPTables file:
+Since you'll most likely be going to use your new server to host some websites at some point, you'll have to add new rules to the firewall to allow HTTP and HTTPS traffic. 
 
+5.4 To accomplish that, open the IPTables file:
 ```
 sudo nano /etc/sysconfig/iptables
 ```
 
-Just after or before the SSH rule, add the rules for HTTP (port 80) and HTTPS (port 443) traffic, so that that portion of the file appears as shown in the code block below.
+5.5 Just after or before the SSH rule, add the rules for HTTP (port 80) and HTTPS (port 443) traffic, so that that portion of the file appears as shown in the code block below.
 ```
 -A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
 -A INPUT -p tcp -m state --state NEW -m tcp --dport 80 -j ACCEPT
 -A INPUT -p tcp -m state --state NEW -m tcp --dport 443 -j ACCEPT
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 ```
-Save and close the file, then reload IPTables.
+
+5.6 Save and close the file, then reload IPTables.
 ```
 sudo systemctl reload iptables
 ```
-With the above step completed, your CentOS 7 server should now be reasonably secure and be ready for use in production.
+
+With the above step completed, your server should now be reasonably secure and be ready for use in production.
 
 
 ### Step 6 - Optimized system configuration for maximum concurrency.
@@ -1535,7 +1533,7 @@ server {
     ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
 
     # SSL Key exchanges
-    ssl_protocols TLSv1.2 TLSv1.3; # !! TLS 1.3 Requires nginx >= 1.13.0 !!
+    ssl_protocols TLSv1.2 TLSv1.3; #!! TLS 1.3 Requires nginx >= 1.13.0 !!
     ssl_ecdh_curve secp384r1;
     ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
     ssl_prefer_server_ciphers on;
@@ -1545,20 +1543,19 @@ server {
     ssl_stapling_verify on;
     
     # DNS Resolver - to lookup your upstream domain name URL
-    resolver 8.8.8.8 1.1.1.1 valid=300s ipv6=off;
+    resolver 8.8.8.8 4.4.4.4 valid=300s ipv6=off;
     resolver_timeout 10s;
 
     # Security Header
-    add_header X-Robots-Tag none; 
     add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
     add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
-    add_header Referrer-Policy no-referrer, strict-origin-when-cross-origin;
+    add_header Referrer-Policy no-referrer-when-downgrade;
     add_header X-Content-Type-Options nosniff;
     add_header X-Frame-Options SAMEORIGIN;
     add_header X-XSS-Protection "1; mode=block";
     add_header Content-Security-Policy upgrade-insecure-requests;
     # Please add you own resource domain to this custom CSP!! and delete the line upper.
-    # add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://ssl.google-analytics.com https://connect.facebook.net; img-src 'self' https://ssl.google-analytics.com https://s-static.ak.facebook.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://themes.googleusercontent.com; frame-src https://www.facebook.com https://s-static.ak.facebook.com; object-src 'none'";
+    # add_header Content-Security-Policy "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; child-src 'none'; object-src 'none'; form-action 'self'; script-src 'self' https://www.google-analytics.com https://apis.google.com https://cdnjs.cloudflare.com https://connect.facebook.net; img-src 'self' https:; style-src 'self' https:; font-src 'self' https:; frame-src 'self' https:;";
 }
 
     # Public Key Pinning Extension for HTTP (HPKP) - OPTIONAL
@@ -1576,7 +1573,6 @@ TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name 
 
 
 5.6 Enable config file 
-
 ```
 cd /etc/nginx/sites-enabled/
 ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
@@ -1589,8 +1585,6 @@ systemctl restart nginx.service
 ```
 
 5.8 Test your website SSL
-
-https://www.ssllabs.com/
 
 https://observatory.mozilla.org/
 
