@@ -1096,32 +1096,31 @@ Create a file "nginx.service" in /lib/systemd/system/nginx.service
 sudo vi /lib/systemd/system/nginx.service
 ```
 
-Then copy below into the file and save
+Then copy service detail below into the file and save
 ```Ini
 [Unit]
-Description=The nginx HTTP and reverse proxy server
+Description=The NGINX HTTP and reverse proxy server
 After=syslog.target network.target remote-fs.target nss-lookup.target
 
 [Service]
 Type=forking
 PIDFile=/run/nginx.pid
-ExecStartPre=/usr/sbin/nginx -t -c  /etc/nginx/nginx.conf
-ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
-ExecReload=/bin/kill -s HUP $MAINPID
-ExecStop=/bin/kill -s TERM $MAINPID ; /bin/sleep 1
+ExecStartPre=/usr/sbin/nginx -t
+ExecStart=/usr/sbin/nginx
+ExecReload=/usr/sbin/nginx -s reload
+ExecStop=/bin/kill -s QUIT $MAINPID
 PrivateTmp=true
 
 [Install]
 WantedBy=multi-user.target
-~                             
- ```
+```
  
 Then reload the system files
 ```
 systemctl daemon-reload
 ```
 
-4.7 (DO ONLY ONCE)* Create startup script for automatic start nginx service
+4.7 (DO ONLY ONCE)* Create a script for automatic start nginx service at system startup
 ```text
 sudo ln -s /usr/local/nginx/sbin/nginx /usr/sbin/nginx
 sudo vi /etc/init.d/nginx then copy script below
@@ -1160,20 +1159,22 @@ lockfile=/var/lock/subsys/nginx
 
 make_dirs() {
    # make required directories
-   user=`$nginx -V 2>&1 | grep "configure arguments:" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -`
-   if [ -z "`grep $user /etc/passwd`" ]; then
-       useradd -M -s /bin/nologin $user
-   fi
-   options=`$nginx -V 2>&1 | grep 'configure arguments:'`
-   for opt in $options; do
-       if [ `echo $opt | grep '.*-temp-path'` ]; then
-           value=`echo $opt | cut -d "=" -f 2`
-           if [ ! -d "$value" ]; then
-               # echo "creating" $value
-               mkdir -p $value && chown -R $user $value
-           fi
-       fi
-   done
+   user=`$nginx -V 2>&1 | grep "configure arguments:.*--user=" | sed 's/[^*]*--user=\([^ ]*\).*/\1/g' -`
+   if [ -n "$user" ]; then
+      if [ -z "`grep $user /etc/passwd`" ]; then
+         useradd -M -s /bin/nologin $user
+      fi
+      options=`$nginx -V 2>&1 | grep 'configure arguments:'`
+      for opt in $options; do
+          if [ `echo $opt | grep '.*-temp-path'` ]; then
+              value=`echo $opt | cut -d "=" -f 2`
+              if [ ! -d "$value" ]; then
+                  # echo "creating" $value
+                  mkdir -p $value && chown -R $user $value
+              fi
+          fi
+       done
+    fi
 }
 
 start() {
