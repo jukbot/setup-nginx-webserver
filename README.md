@@ -1310,31 +1310,32 @@ sudo vi nginx.conf
 ```nginx
 user  nginx;
 worker_processes auto;
-worker_rlimit_nofile 100000;
-pid   /var/run/nginx.pid;
+worker_rlimit_nofile 81920;
 error_log /var/log/nginx/error.log crit;
+pid   /var/run/nginx.pid;
 
 events {
-    worker_connections 250000; 
+    worker_connections 200000; 
     use epoll;
     multi_accept on;
 }
 
 http {
-    sendfile on;
-    tcp_nopush on;
-    tcp_nodelay on;
-    types_hash_max_size 2048; 
-    server_tokens off; 
-    
-    reset_timedout_connection on;
-    server_name_in_redirect off;
-    keepalive_requests           100000;
-    keepalive_timeout            60s;
-    send_timeout                 30s;
-    #fastcgi for PHP
-    #fastcgi_read_timeout 300; 
+    sendfile                      on;
+    tcp_nopush                    on;
+    tcp_nodelay                   on;
+    reset_timedout_connection     on;
+    server_tokens                 off; 
+    server_name_in_redirect       off;
 
+    types_hash_max_size           2048; 
+    keepalive_requests            100000;
+    keepalive_timeout             60s;
+    send_timeout                  30s;
+
+    include mime.types;
+    default_type application/octet-stream;
+    
     ##
     # OpenFile Cache Settings
     ##
@@ -1361,9 +1362,6 @@ http {
     large_client_header_buffers  4 256k;
     output_buffers               1 32k;
     postpone_output              1460;
-
-    include mime.types;
-    default_type application/octet-stream;
     
     ##
     # Logging Settings
@@ -1432,7 +1430,7 @@ systemctl restart nginx.service
 
 ```
 cd sites-available/
-vi <domainname>.conf
+vi <your-domain-name>.conf
 ```
 
 5.5 Config file as below
@@ -1488,8 +1486,8 @@ server {
     #         limit_req zone=req_limit_per_ip burst=10 nodelay;
     #     }
 
-    # Html, xml, json and data cache timeout (no cache)
-    location ~* \.(?:manifest|appcache|html?|xml|json)$ {
+    # Html and data cache timeout (no cache)
+    location ~* \.(?:manifest|appcache|html?)$ {
         expires -1;
         access_log off;
     }
@@ -1501,16 +1499,16 @@ server {
         add_header Cache-Control "public";
     }
 
-    # Media: images, icons, video, audio, HTC cache timeout
-    location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc|pdf)$ {
-        expires 30d;
+    # Static files cache timeout
+    location ~* \.(?:jpg|jpeg|gif|png|ico|webp|gz|svg|svgz|eot|woff|woff2|oft|avi|wmv|mp3|mp4|ogg|ogv|webm|xml|txt|json|csv|pdf)$ {
+        expires 1d;
         access_log off;
         add_header Cache-Control "public";
     }
-
-    # CSS and Javascript cache timeout
+     
+    # Style, Script files cache timeout
     location ~* \.(?:css|js)$ {
-        expires 1d;
+        expires 7d;
         access_log off;
         add_header Cache-Control "public";
     }
@@ -1529,7 +1527,7 @@ server {
     ssl_session_tickets off;
 
     # Diffie-Hellman parameter for DHE ciphersuites, recommended 4096 bits
-    # to generate your dhparam.pem file, run openssl dhparam -out /etc/nginx/ssl/dhparam.pem 4096 in your SSL store directory
+    # to generate your dhparam.pem file, run $ openssl dhparam -out /etc/nginx/ssl/<your-domain-name>/dhparam.pem 4096
     ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
 
     # SSL Key exchanges
@@ -1547,7 +1545,6 @@ server {
     resolver_timeout 10s;
 
     # Security Header
-    add_header Cache-Control "max-age=0, no-cache, no-store, must-revalidate";
     add_header Strict-Transport-Security "max-age=31536000; includeSubdomains; preload";
     add_header Referrer-Policy no-referrer-when-downgrade;
     add_header X-Content-Type-Options nosniff;
@@ -1572,10 +1569,10 @@ LEARN MORE: about configuration: https://mozilla.github.io/server-side-tls/ssl-c
 TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
 
 
-5.6 Enable config file 
+5.6 Enable config file by symbolic them
 ```
 cd /etc/nginx/sites-enabled/
-ls -s /etc/nginx/sites-available/<domainname>.conf /etc/nginx/sites-enabled/
+ls -s /etc/nginx/sites-available/<your-domain-name>.conf /etc/nginx/sites-enabled/
 ```
 
 5.7 Save and test nginx config then restart nginx service
