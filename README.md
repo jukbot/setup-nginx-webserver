@@ -1557,7 +1557,7 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header Content-Security-Policy upgrade-insecure-requests;
     # Please add you own resource domain to this custom CSP!! and delete the line upper.
-    # add_header Content-Security-Policy "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; child-src 'none'; object-src 'none'; form-action 'self'; script-src 'self' https://www.google-analytics.com https://apis.google.com https://cdnjs.cloudflare.com https://connect.facebook.net; img-src 'self' https:; style-src 'self' https:; font-src 'self' https:; frame-src 'self' https:;";
+    # add_header Content-Security-Policy "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; child-src 'none'; object-src 'none'; form-action 'self'; script-src 'self' https://storage.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com https://apis.google.com https://cdnjs.cloudflare.com; img-src 'self' https: data:; style-src 'self' unsafe-inline https:; font-src 'self' https: data:; frame-src 'self' https:; connect-src 'self' https:; worker-src 'self';";
 }
 
     # Public Key Pinning Extension for HTTP (HPKP) - OPTIONAL
@@ -1589,6 +1589,11 @@ systemctl restart nginx.service
 5.8 Test your website SSL
 
 https://observatory.mozilla.org/
+https://www.ssllabs.com/ssltest/
+
+<p align="center">
+    <img src="https://cdn.rawgit.com/jukbot/setup-nginx-webserver/21a211ec/observation_mozilla.png" alt="MOZILLA_OBSERVVATORY_result"/>
+</p>
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/setup-webserver-centos7/12a2c363/ssllab_result_.png" alt="SSLLAB_result"/>
