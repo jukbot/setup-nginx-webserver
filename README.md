@@ -1557,7 +1557,7 @@ server {
     add_header X-XSS-Protection "1; mode=block";
     add_header Content-Security-Policy upgrade-insecure-requests;
     # Please add you own resource domain to this custom CSP!! and delete the line upper.
-    # add_header Content-Security-Policy "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; child-src 'none'; object-src 'none'; form-action 'self'; script-src 'self' https://storage.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com https://apis.google.com https://cdnjs.cloudflare.com; img-src 'self' https: data:; style-src 'self' unsafe-inline https:; font-src 'self' https: data:; frame-src 'self' https:; connect-src 'self' https:; worker-src 'self';";
+    # add_header Content-Security-Policy "default-src 'none'; frame-ancestors 'none'; base-uri 'none'; child-src 'none'; object-src 'none'; form-action 'self'; script-src 'self' https://storage.googleapis.com https://www.googletagmanager.com https://www.google-analytics.com https://apis.google.com https://cdnjs.cloudflare.com; img-src 'self' https: data: *.googleusercontent.com; style-src 'self' unsafe-inline https:; font-src 'self' https: data:; frame-src 'self' https:; connect-src 'self' https:; worker-src 'self';";
 }
 
     # Public Key Pinning Extension for HTTP (HPKP) - OPTIONAL
