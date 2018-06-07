@@ -1571,6 +1571,14 @@ server {
 LEARN MORE: about HPKP: https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning
 LEARN MORE: about configuration: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
+!!! For website that include Facebook Sharing (FB.UI) using X-Frame-Options can refused to display. 
+Solution: is set target="_top" on the link or window.top.location=<FBAppNameSpaces>
+    
+!!! For website that include Youtube iFrame using X-Frame-Options can refused to display too.
+Solution: try replace https://www.youtube.com/watch?v= with https://www.youtube.com/embed/
+
+!!! If you're using Facebook Sharing or Embedded frame eg: youtube, vimeo, facebook login button or codepen you need to set X-Frame-Options to SAMEORIGIN otherwise it will refuse to load content from external iframe.
+
 TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
 
 
