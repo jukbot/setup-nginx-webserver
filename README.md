@@ -1,5 +1,5 @@
 # Setup a Secure Nginx Web Server on CentOS/Redhat 7.x
-(Updated May 1, 2018)
+(Updated June 9, 2018)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -20,9 +20,9 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 ```
 
 **TODO NEXT**
-- Add guide for building nginx load balance
-- Add guide for implementing nginx unit
-- Add guide for wrapping custom nginx as docker image
+- [ ] Add guide for building nginx load balance
+- [ ] Add guide for implementing nginx unit
+- [ ] Add guide for wrapping custom nginx as docker image
 
 ## Table of Contents  
 - [Introduction](#introduction)
