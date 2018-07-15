@@ -1330,13 +1330,10 @@ http {
     tcp_nopush                    on;
     tcp_nodelay                   on;
     reset_timedout_connection     on;
-    server_tokens                 off; 
-    server_name_in_redirect       off;
-
-    types_hash_max_size           2048; 
+    server_tokens                 off;  
     keepalive_requests            100000;
     keepalive_timeout             60s;
-    send_timeout                  30s;
+    send_timeout                  10s;
 
     include mime.types;
     default_type application/octet-stream;
@@ -1365,8 +1362,6 @@ http {
     client_header_timeout        30s;
     client_body_timeout          30s;
     large_client_header_buffers  4 256k;
-    output_buffers               1 32k;
-    postpone_output              1460;
     
     ##
     # Logging Settings
@@ -1388,28 +1383,25 @@ http {
     ##
     # Brotli Settings (If you not have brotli install, delete this config)
     ##
-    brotli on;
-    brotli_static on;
-    brotli_min_length 1000;
-    brotli_buffers 32 8k;
-    brotli_comp_level 6;
-    brotli_types text/plain text/css text/javascript text/xml font/opentype application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
+    #brotli on;
+    #brotli_static on;
+    #brotli_min_length 1000;
+    #brotli_buffers 32 8k;
+    #brotli_comp_level 6;
+    #brotli_types text/plain text/css text/javascript text/xml font/opentype application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
     
     ##
     # Gzip Settings (If have brotli installed, disable this config)
     ##
-    #gzip on;
-    #gzip_buffers                16 8k;
-    #gzip_comp_level                 6;
-    #gzip_disable              "msie6";
-    #gzip_http_version             1.1;
-    #gzip_vary                      on;
-    #gzip_min_length              1000;
-    #gzip_proxied                  any;
-    #gzip_types text/plain text/css text/javascript text/xml application/javascript application/x-javascript application/json application/xml application/xml+rss application/ecmascript image/svg+xml;
+    gzip                        on;
+    gzip_vary                   on;
+    gzip_min_length             10240;
+    gzip_proxied                expired no-cache no-store private auth;
+    gzip_types                  text/plain text/css text/xml text/javascript application/x-javascript application/xml;
+    gzip_disable                msie6;
 
     ##
-    # Virtual Host Configs
+    # Virtual Block Host Configs
     ##
     server_names_hash_bucket_size 64;
     include sites-enabled/*;
@@ -1449,9 +1441,6 @@ server {
     index index.html;
     charset utf-8;
 
-    access_log  off;
-    error_log   /var/log/nginx.error_log error;
-
     error_page  404     /404.html;
     error_page  403     /403.html;
     error_page  500 502 503 504 /50x.html;
@@ -1462,27 +1451,23 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    # If you using as proxy server (eg: webApp, nodeJS)
-    #  location / {
-    #         include proxy_params;
-    #         add_header X-Proxy-Cache $upstream_cache_status;
-    #         proxy_pass         http://127.0.0.1:9000;
-    #         proxy_redirect     off;
-    #         proxy_set_header   Host             $host;
-    #         proxy_set_header   X-Real-IP        $remote_addr;
-    #         proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
-    #         proxy_connect_timeout      60;
-    #         proxy_send_timeout         60;
-    #         proxy_read_timeout         60;
-    #         proxy_buffer_size          4k;
-    #         proxy_buffers              4 32k;
-    #         proxy_busy_buffers_size    64k;
-    #         proxy_temp_file_write_size 64k;
-    #         proxy_temp_path            /etc/nginx/proxy_temp;
-    #         limit_conn conn_limit_per_ip 10;
-    #         limit_req zone=req_limit_per_ip burst=10 nodelay;
-    #     }
-
+    # If you using as proxy server (eg: express, nodeJS)
+    #location / {
+      #proxy_http_version      1.1;
+      #proxy_set_header        Upgrade                 $http_upgrade;
+      #proxy_set_header        Connection              "upgrade";
+      #proxy_set_header        X-Real-IP               $remote_addr;
+      #proxy_set_header        X-Forwarded-For         $proxy_add_x_forwarded_for;
+      #proxy_set_header        Host                    $host;
+      #proxy_connect_timeout   60;
+      #proxy_send_timeout      60;
+      #proxy_read_timeout      60;
+      #proxy_buffering         on;
+      #proxy_buffer_size       128k;
+      #proxy_buffers           4 256k;
+      #proxy_pass              http://localhost:3000;
+    }
+    
     # Html and data cache timeout (no cache)
     location ~* \.(?:manifest|appcache|html?)$ {
         expires -1;
@@ -1519,7 +1504,7 @@ server {
     ssl_certificate /etc/ssl/<yourweb-ssl-folder>/cert.crt;
     ssl_certificate_key /etc/ssl/<yourweb-ssl-folder>/privkey.key;
     ssl_trusted_certificate /etc/ssl/<yourweb-ssl-folder>/trustchain.crt;
-    ssl_session_timeout 10m;
+    ssl_session_timeout 60m;
     ssl_session_cache shared:SSL:10m;
     ssl_session_tickets off;
 
@@ -1538,7 +1523,7 @@ server {
     ssl_stapling_verify on;
     
     # DNS Resolver - to lookup your upstream domain name URL
-    resolver 8.8.8.8 4.4.4.4 valid=300s ipv6=off;
+    resolver 1.1.1.1 8.8.8.8 ipv6=off;
     resolver_timeout 10s;
 
     # Security Header
