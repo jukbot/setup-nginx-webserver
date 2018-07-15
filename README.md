@@ -1320,7 +1320,7 @@ error_log /var/log/nginx/error.log crit;
 pid   /var/run/nginx.pid;
 
 events {
-    worker_connections 200000; 
+    worker_connections 4096; # 4096 * (2 cores) = max clients handle
     use epoll;
     multi_accept on;
 }
@@ -1371,15 +1371,7 @@ http {
     ##
     # Logging Settings
     ##
-    log_format main      '$remote_addr - $remote_user [$time_local]  '
-      '"$request" $status $bytes_sent '
-      '"$http_referer" "$http_user_agent" '
-  	  '"$gzip_ratio" "$http_x_forwarded_for"';
-    log_format compression '$remote_addr - $remote_user [$time_local] ' '"$request" $status $body_bytes_sent ' '"$http_referer" "$http_user_agent" "$gzip_ratio"';
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
-    access_log off;
-    log_not_found off;
+    access_log off; # Disable to improve I/O just enable only error
 
     ##
     # Proxy Cache Settings
