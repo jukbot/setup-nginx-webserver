@@ -19,10 +19,8 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 - Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
 ```
 
-**TODO NEXT**
-- [ ] Add guide for building nginx load balance
-- [ ] Add guide for implementing nginx unit
-- [ ] Add guide for wrapping custom nginx as docker image
+**THIS CONFIG BE USE IN ANYWHERE**
+- You can use this config in anytypes of environment eg. Nginx on VPS, VCM, any container or Docker. Just optimize to meet your load.
 
 ## Table of Contents  
 - [Introduction](#introduction)
@@ -1433,8 +1431,8 @@ server {
 }
 
 server {
-    listen 443 ssl http2;
-    listen [::]:443 ssl http2;
+    listen 443 ssl http2 reuseport;
+    listen [::]:443 ssl http2 reuseport;
     server_name <your-domain-name>;
 
     root /var/www/<web-folder-name>/html;
@@ -1546,6 +1544,7 @@ server {
 
 !!! In order to generate base64 for backup key, you need to generate a backup certificates set from CA. !!!
 LEARN MORE: about HPKP: https://developer.mozilla.org/en-US/docs/Web/Security/Public_Key_Pinning
+
 LEARN MORE: about configuration: https://mozilla.github.io/server-side-tls/ssl-config-generator/
 
 !!! For website that include Facebook Sharing (FB.UI) using X-Frame-Options can refused to display. 
@@ -1555,6 +1554,9 @@ Solution: is set target="_top" on the link or window.top.location=<FBAppNameSpac
 Solution: try replace https://www.youtube.com/watch?v= with https://www.youtube.com/embed/
 
 !!! If you're using Facebook Sharing or Embedded frame eg: youtube, vimeo, facebook login button or codepen you need to set X-Frame-Options to SAMEORIGIN otherwise it will refuse to load content from external iframe.
+
+!!! Learn more about Socket Sharding in NGINX Release 1.9.1 (reuseport)
+https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/
 
 TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
 
