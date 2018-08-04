@@ -1344,9 +1344,9 @@ http {
 
     ##
     # Limit request per IP (DDoS prevention)
-    ##
-    limit_conn_zone $binary_remote_addr zone=conn_limit_per_ip:10m;
-    limit_req_zone $binary_remote_addr zone=req_limit_per_ip:10m rate=5r/s;
+    ##    
+    limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
+    limit_req zone=one burst=10 nodelay;
     limit_req_status 403;
 
     ##
