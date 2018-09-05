@@ -10,7 +10,13 @@ Because most of these linux branches have a long term support, f_cking stable an
 However, most libraries and applications that preinstalled are obsolete. 
 So this article will guide you STEP BY STEP to build a perfect web server with understanding.
 
-This config is useful to use in any types of environment or inside container, please be aware that this config is just an example that optimize for my server environment, some configure value might need to tune upon your server hardware.
+
+**THIS CONFIG BE USE IN ANYWHERE**
+- You can use this config in anytypes of environment eg. Nginx on VPS, VCM, any container or Docker. Just optimize to meet your load.
+
+**!!PLEASE READ!!**
+- Please be aware that this config is just an example that optimize for my server environment, some configure value might need to tune upon your server hardware and type of your application.
+
 
 **ANNOUCEMENT**
 ```
@@ -21,8 +27,7 @@ CentOS/RedHat 7.4 the openssl package has been updated to upstream version 1.0.2
 - Added Cryptographic Message Syntax (CMS) support for the following schemes: RSA-PSS, RSA-OAEP, ECDH, and X9.42 DH.
 ```
 
-**THIS CONFIG BE USE IN ANYWHERE**
-- You can use this config in anytypes of environment eg. Nginx on VPS, VCM, any container or Docker. Just optimize to meet your load.
+
 
 ## Table of Contents  
 - [Introduction](#introduction)
