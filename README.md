@@ -1,5 +1,5 @@
 # Setup a Secure Nginx Web Server on CentOS/Redhat 7.x
-(Updated June 9, 2018)
+(Updated 5 Sep, 2018)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -9,6 +9,8 @@ I've gather informations and created this article for sysadmin who're using Cent
 Because most of these linux branches have a long term support, f_cking stable and secured (SELinux). 
 However, most libraries and applications that preinstalled are obsolete. 
 So this article will guide you STEP BY STEP to build a perfect web server with understanding.
+
+This config is useful to use in any types of environment or inside container, please be aware that this config is just an example that optimize for my server environment, some configure value might need to tune upon your server hardware.
 
 **ANNOUCEMENT**
 ```
@@ -337,7 +339,9 @@ This means it might fail under high load. So we need to config the sysctl.conf f
 sudo vi /etc/sysctl.conf
 ```
 
-2. Edit file as following configuration
+2. Edit file as following configuration 
+(!! WARNING YOU MUST TEST EACH VALUUE BEFORE USE IN PRODUCTION, THIS CONFIG IS DEPEND ON YOUR SERVER ENVIRONMENT !!)
+
 ```Ini
 # Increase number of incoming connections
 net.core.somaxconn = 250000
@@ -579,7 +583,7 @@ cd /usr/local/src/
 wget https://www.openssl.org/source/openssl-1.1.0-latest.tar.gz
 tar -zxf openssl-1.1.0-latest.tar.gz
 
-cd openssl-1.1.0h
+cd openssl-1.1.0i
 ./config
 ```
 
@@ -618,7 +622,7 @@ ldconfig
 6). Verify the OpenSSL version 
 ```
 openssl version
-OpenSSL 1.1.0h  27 Mar 2018
+OpenSSL 1.1.0i  14 Aug 2018
 ```
 
 
@@ -989,9 +993,9 @@ NOTE: Someone ask WHERE IS ipv6 module? according to the changes with nginx 1.11
 ```
 NOTE!! Please change the library version to your current library path version. For example
 
---with-pcre=/usr/local/src/pcre-8.xx \
---with-zlib=/usr/local/src/zlib-1.2.xx \
---with-openssl=/usr/local/src/openssl-1.1.0x \
+--with-pcre=/usr/local/src/pcre-8.42 \
+--with-zlib=/usr/local/src/zlib-1.2.11 \
+--with-openssl=/usr/local/src/openssl-1.1.0i \
 ```
 
 4.1 Run the nginx config 
@@ -1317,12 +1321,12 @@ pid   /var/run/nginx.pid;
 
 events {
     worker_connections 4096; # 4096 * (2 cores) = max clients handle
-    use epoll;
-    multi_accept on;
+    use epoll; # use efficient long polling this method will accept many connections as possible
+    multi_accept on; # worker process will accept one new connection at a time
 }
 
 http {
-    sendfile                      on;
+    sendfile                      off; # turn this off if you're running in a vm environment
     tcp_nopush                    on;
     tcp_nodelay                   on;
     reset_timedout_connection     on;
@@ -1365,7 +1369,7 @@ http {
     access_log off; # Disable to improve I/O just enable only error
 
     ##
-    # Proxy Cache Settings
+    # Proxy Cache Settings (If you're using NodeJS, ExpressJS, KoaJS)
     ##
     proxy_cache one;
     proxy_cache_min_uses 3;
@@ -1447,7 +1451,7 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    # If you using as proxy server (eg: express, nodeJS)
+    # If you using as proxy server (eg: NodeJS, ExpressJS, KoaJS)
     #location / {
       #proxy_http_version      1.1;
       #proxy_set_header        Upgrade                 $http_upgrade;
@@ -1458,11 +1462,21 @@ server {
       #proxy_connect_timeout   60;
       #proxy_send_timeout      60;
       #proxy_read_timeout      60;
-      #proxy_buffering         on;
-      #proxy_buffer_size       128k;
-      #proxy_buffers           4 256k;
+      #proxy_redirect          off;
+      #proxy_buffers           8 32k;
+      #proxy_buffer_size       64k;
+
       #proxy_pass              http://localhost:3000;
     }
+    
+    # Load balancer nodes, if you're using docker or using as cluster, 
+    # replace proxy_pass with http://io_nodes
+    #upstream io_nodes {
+      #ip_hash; # If you using websocket must use ip_hash to stick client to same server
+      #server localhost:3000;
+      #server localhost:3001;
+      #server localhost:3002;
+    #}
     
     # Html and data cache timeout (no cache)
     location ~* \.(?:manifest|appcache|html?)$ {
@@ -1510,7 +1524,7 @@ server {
 
     # SSL Key exchanges
     ssl_protocols TLSv1.2 TLSv1.3; #!! TLS 1.3 Requires nginx >= 1.13.0 !!
-    ssl_ecdh_curve secp384r1;
+    ssl_ecdh_curve prime256v1:secp384r1:secp521r1;
     ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
     ssl_prefer_server_ciphers on;
 
@@ -1519,7 +1533,7 @@ server {
     ssl_stapling_verify on;
     
     # DNS Resolver - to lookup your upstream domain name URL
-    resolver 1.1.1.1 8.8.8.8 ipv6=off;
+    resolver 1.1.1.1 8.8.8.8 valid=300s ipv6=off;
     resolver_timeout 10s;
 
     # Security Header
