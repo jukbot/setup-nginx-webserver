@@ -1,5 +1,5 @@
 # Setup a Secure Nginx Web Server on CentOS/Redhat 7.x
-(Updated 5 Sep, 2018)
+(Updated 1 Oct, 2018)
 
 <p align="center">
     <img src="https://cdn.rawgit.com/jukbot/secure-centos/master/Centos-logo-light.svg" alt="PHP7"/>
@@ -585,16 +585,16 @@ yum info openssl
 1). Download the latest version of OpenSSL and generate the config, as follows:
 ```shell
 cd /usr/local/src/
-wget https://www.openssl.org/source/openssl-1.1.0-latest.tar.gz
-tar -zxf openssl-1.1.0-latest.tar.gz
+wget https://www.openssl.org/source/openssl-1.1.1-latest.tar.gz
+tar -zxf openssl-1.1.1.tar.gz
 
-cd openssl-1.1.0i
+cd openssl-1.1.1
 ./config
 ```
 
 Note: 
 - If you want to install other version you can download it from https://www.openssl.org/source/
-- We will use latest openssl version 1.1.0 (Long Term Support Version) from official website.
+- We will use latest openssl version 1.1.1 (Long Term Support Version) from official website.
 - Alphabet suffix 'h' of openssl version number depends on release of openssl.
 
 2). Compile the source code, test and then install the package (need root permission)
@@ -627,7 +627,7 @@ ldconfig
 6). Verify the OpenSSL version 
 ```
 openssl version
-OpenSSL 1.1.0i  14 Aug 2018
+OpenSSL 1.1.1  11 Sep 2018
 ```
 
 
@@ -1528,9 +1528,9 @@ server {
     ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
 
     # SSL Key exchanges
-    ssl_protocols TLSv1.2 TLSv1.3; #!! TLS 1.3 Requires nginx >= 1.13.0 !!
+    ssl_protocols TLSv1.2 TLSv1.3; # !! TLS 1.3 Requires openssl >= 1.1.1 and nginx >= 1.13.0 !!
     ssl_ecdh_curve prime256v1:secp384r1:secp521r1;
-    ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+    ssl_ciphers 'TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-256-GCM-SHA384:EECDH+CHACHA20:EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
     ssl_prefer_server_ciphers on;
 
     # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them for faster handshake
