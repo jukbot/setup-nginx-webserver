@@ -943,7 +943,7 @@ Next, set pcre (required library) path to /usr/local/src/pcre-8.41 that where yo
 
 Next, set zlib (required library) path to /usr/local/src/zlib-1.2.11 that where you downloaded source to.
 
-Next, set openssl (required library) path to /usr/local/src/openssl-1.1.0g that where you downloaded source to.
+Next, set openssl (required library) path to /usr/local/src/openssl-1.1.1 that where you downloaded source to.
 
 Next, add ssl http module for enables used SSL/TLS (https) in nginx. (VERY recommeded I love HTTPS !!)
 
@@ -1027,7 +1027,7 @@ NOTE!! Please change the library version to your current library path version. F
 --with-ld-opt="-lrt" \
 --with-pcre=/usr/local/src/pcre-8.42 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.1.0h \
+--with-openssl=/usr/local/src/openssl-1.1.1 \
 --with-http_ssl_module \
 --with-http_v2_module \
 --with-http_realip_module \
