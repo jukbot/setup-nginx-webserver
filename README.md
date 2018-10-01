@@ -1000,7 +1000,7 @@ NOTE!! Please change the library version to your current library path version. F
 
 --with-pcre=/usr/local/src/pcre-8.42 \
 --with-zlib=/usr/local/src/zlib-1.2.11 \
---with-openssl=/usr/local/src/openssl-1.1.0i \
+--with-openssl=/usr/local/src/openssl-1.1.1 \
 ```
 
 4.1 Run the nginx config 
