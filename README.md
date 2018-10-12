@@ -1530,7 +1530,7 @@ server {
     # SSL Key exchanges
     ssl_protocols TLSv1.2 TLSv1.3; # !! TLS 1.3 Requires openssl >= 1.1.1 and nginx >= 1.13.0 !!
     ssl_ecdh_curve prime256v1:secp384r1:secp521r1;
-    ssl_ciphers 'TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-256-GCM-SHA384:EECDH+CHACHA20:EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+    ssl_ciphers 'TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-256-GCM-SHA384:TLS13-AES-128-GCM-SHA256:EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
     ssl_prefer_server_ciphers on;
 
     # OCSP Stapling - fetch OCSP records from URL in ssl_certificate and cache them for faster handshake
@@ -1577,6 +1577,7 @@ https://www.nginx.com/blog/socket-sharding-nginx-release-1-9-1/
 
 TIP: Resolver in Nginx is a load-balancer that resolves an upstream domain name asynchronously. It chooses one IP from its buffer according to round-robin for each request. Its buffer has the latest IPs of the backend domain name. At every interval (one second by default), it resolves the domain name. If it fails to resolve the domain name, the buffer retains the last successfully resolved IPs.
 
+ssl_ciphers are reference from: https://blog.sandchaschte.ch/en/latest-nginx-with-tlsv1-3-and-brotli
 
 5.6 Enable config file by symbolic them
 ```
