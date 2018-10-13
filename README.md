@@ -1528,7 +1528,7 @@ server {
     ssl_dhparam  /etc/ssl/<yourweb-ssl-folder>/dhparam.pem;
 
     # SSL Key exchanges
-    ssl_protocols TLSv1.2 TLSv1.3; # !! TLS 1.3 Requires openssl >= 1.1.1 and nginx >= 1.13.0 !!
+    ssl_protocols TLSv1.3 TLSv1.2; # !! TLS 1.3 Requires openssl >= 1.1.1 and nginx >= 1.13.0 !!
     ssl_ecdh_curve prime256v1:secp384r1:secp521r1;
     ssl_ciphers 'TLS13-CHACHA20-POLY1305-SHA256:TLS13-AES-256-GCM-SHA384:TLS13-AES-128-GCM-SHA256:EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
     ssl_prefer_server_ciphers on;
