@@ -1308,6 +1308,16 @@ sudo touch /var/cache/nginx/client_temp
 
 For using http2 you need to have certificate (SSL) installed
 
+5.0 To get maximum throughput in high concurrency you need to tune os configuration.
+
+```bash
+/etc/security/limits.conf
+#   web soft nofile 65535
+#   web hard nofile 65535
+#   /etc/default/nginx
+#   ULIMIT="-n 65535"
+```
+
 5.1 Go to nginx global file directory
 
 ```
@@ -1320,43 +1330,43 @@ sudo vi nginx.conf
 ```nginx
 user  nginx;
 worker_processes auto;
-worker_rlimit_nofile 81920;
+worker_rlimit_nofile 65535;
 error_log /var/log/nginx/error.log crit;
 pid   /var/run/nginx.pid;
 
 events {
-    worker_connections 4096; # 4096 * (2 cores) = max clients handle
+    worker_connections 65535; #     65535 * (2 cores) = max clients handle
     use epoll; # use efficient long polling this method will accept many connections as possible
     multi_accept on; # worker process will accept one new connection at a time
 }
 
 http {
-    sendfile                      off; # turn this off if you're running in a vm environment
+    sendfile                      on; # turn this off if you're running in a vm environment
     tcp_nopush                    on;
     tcp_nodelay                   on;
     reset_timedout_connection     on;
     server_tokens                 off;  
-    keepalive_requests            100000;
+    keepalive_requests            5000;
     keepalive_timeout             60s;
-    send_timeout                  10s;
+    send_timeout                  120s;
 
-    include mime.types;
-    default_type application/octet-stream;
+    include                       /etc/nginx/mime.types;
+    default_type                 application/octet-stream;
     
     ##
     # OpenFile Cache Settings
     ##
-    open_file_cache max=1000 inactive=20s; 
-    open_file_cache_valid 30s; 
-    open_file_cache_min_uses 2;
-    open_file_cache_errors off;
+    open_file_cache              max=1000 inactive=20s; 
+    open_file_cache_valid        30s; 
+    open_file_cache_min_uses     2;
+    open_file_cache_errors       off;
 
     ##
     # Limit request per IP (DDoS prevention)
     ##    
     limit_req_zone $binary_remote_addr zone=one:10m rate=10r/s;
-    limit_req zone=one burst=10 nodelay;
-    limit_req_status 403;
+    limit_req                          zone=one burst=10 nodelay;
+    limit_req_status                   403;
 
     ##
     # Buffer Limit Settings
@@ -1409,7 +1419,7 @@ http {
     # Virtual Block Host Configs
     ##
     server_names_hash_bucket_size 64;
-    include sites-enabled/*;
+    include /etc/nginx/conf.d/*.conf;
 }
 ```
 
@@ -1691,3 +1701,4 @@ Reference:
 - https://www.rootusers.com/how-to-enable-or-disable-selinux-in-centos-rhel-7/
 - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html-single/7.4_release_notes/index
 - https://www.nginx.com/resources/wiki/start/topics/examples/SSL-Offloader/
+- https://gist.github.com/v0lkan/90fcb83c86918732b894
