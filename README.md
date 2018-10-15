@@ -1329,13 +1329,14 @@ sudo vi nginx.conf
 
 ```nginx
 user  nginx;
-worker_processes auto;
+
+_processes auto;
 worker_rlimit_nofile 65535;
 error_log /var/log/nginx/error.log crit;
 pid   /var/run/nginx.pid;
 
 events {
-    worker_connections 65535; #     65535 * (2 cores) = max clients handle
+    worker_connections 2048; #     2048 * (If you have 2 cores) = max clients handle
     use epoll; # use efficient long polling this method will accept many connections as possible
     multi_accept on; # worker process will accept one new connection at a time
 }
@@ -1346,7 +1347,7 @@ http {
     tcp_nodelay                   on;
     reset_timedout_connection     on;
     server_tokens                 off;  
-    keepalive_requests            5000;
+    keepalive_requests            1000;
     keepalive_timeout             60s;
     send_timeout                  120s;
 
